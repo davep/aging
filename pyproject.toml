@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
     "textual>=2.1.2",
-    "textual-enhanced>=0.6.0",
+    "textual-enhanced>=0.7.0",
     "ngdb>=0.7.0",
     "typing-extensions>=4.12.2",
     "xdg-base-dirs>=6.0.2",

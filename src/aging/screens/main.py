@@ -13,6 +13,7 @@ from textual_enhanced.screen import EnhancedScreen
 ##############################################################################
 # Local imports.
 from .. import __version__
+from ..providers import MainCommands
 
 
 ##############################################################################
@@ -36,6 +37,7 @@ class Main(EnhancedScreen[None]):
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
+    COMMANDS = {MainCommands}
 
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""

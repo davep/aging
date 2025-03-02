@@ -18,6 +18,8 @@ class Aging(EnhancedApp[None]):
     HELP_ABOUT = "There will be more here."
     HELP_LICENSE = "License information will go here."
 
+    COMMANDS = set()
+
     def get_default_screen(self) -> Main:
         """Get the main screen for the application."""
         return Main()
