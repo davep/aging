@@ -8,11 +8,14 @@ from .config import (
     save_configuration,
     update_configuration,
 )
+from .guides import Guide, Guides
 
 ##############################################################################
 # Exports.
 __all__ = [
     "Configuration",
+    "Guide",
+    "Guides",
     "load_configuration",
     "save_configuration",
     "update_configuration",
