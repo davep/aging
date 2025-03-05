@@ -22,6 +22,9 @@ class Configuration:
     theme: str | None = None
     """The theme for the application."""
 
+    guides_directory_visible: bool = True
+    """Is the guides directory visible?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:

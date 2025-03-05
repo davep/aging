@@ -12,7 +12,7 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import AddGuidesToDirectory
+from ..commands import AddGuidesToDirectory, ToggleGuides
 
 
 ##############################################################################
@@ -28,6 +28,7 @@ class MainCommands(CommandsProvider):
         yield AddGuidesToDirectory()
         yield ChangeTheme()
         yield Help()
+        yield ToggleGuides()
         yield Quit()
 
 

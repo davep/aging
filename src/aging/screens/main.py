@@ -26,11 +26,13 @@ from textual_enhanced.screen import EnhancedScreen
 # Textual fspicker imports.
 from textual_fspicker import SelectDirectory
 
+from aging.data.config import load_configuration
+
 ##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import AddGuidesToDirectory
-from ..data import Guide, Guides, load_guides, save_guides
+from ..commands import AddGuidesToDirectory, ToggleGuides
+from ..data import Guide, Guides, load_guides, save_guides, update_configuration
 from ..messages import OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory
@@ -45,6 +47,18 @@ class Main(EnhancedScreen[None]):
     DEFAULT_CSS = """
     Main {
         layout: horizontal;
+
+        #workspace {
+            width: 1fr;
+            height: 1fr;
+            hatch: right $surface;
+            .panel {
+                border-left: solid $panel;
+                &:focus, &:focus-within {
+                    border-left: solid $border;
+                }
+            }
+        }
 
         .panel {
             background: $surface;
@@ -63,14 +77,11 @@ class Main(EnhancedScreen[None]):
             }
         }
 
-        #workspace {
-            hatch: right $surface;
-            .panel {
-                border-left: solid $panel;
-                &:focus, &:focus-within {
-                    border-left: solid $border;
-                }
-            }
+        GuideDirectory {
+            display: none;
+        }
+        &.guides GuideDirectory {
+            display: block;
         }
     }
     """
@@ -85,6 +96,7 @@ class Main(EnhancedScreen[None]):
         # Keep these together as they're bound to function keys and destined
         # for the footer.
         Help,
+        ToggleGuides,
         ChangeTheme,
         Quit,
         # The following don't need to be in a specific order.
@@ -103,6 +115,9 @@ class Main(EnhancedScreen[None]):
     current_entry: var[Entry | None] = var(None)
     """The entry that is being currently viewed."""
 
+    guides_visible: var[bool] = var(True)
+    """Should the guides directory be visible?"""
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
@@ -120,9 +135,17 @@ class Main(EnhancedScreen[None]):
             self.sub_title = self.current_guide.title
             self.current_entry = self.current_guide.load()
 
+    def _watch_guides_visible(self) -> None:
+        """React to the guides directory viability flag being changed."""
+        self.set_class(self.guides_visible, "guides")
+        with update_configuration() as config:
+            config.guides_directory_visible = self.guides_visible
+
     def on_mount(self) -> None:
         """Configure the screen once the DOM is mounted."""
         self.guides = load_guides()
+        config = load_configuration()
+        self.guides_visible = config.guides_directory_visible
 
     def _new_guides(self, guides: Guides) -> None:
         """Add a list of new guides to the guide directory.
@@ -199,6 +222,11 @@ class Main(EnhancedScreen[None]):
 
         # Looks good.
         self.current_guide = new_guide
+
+    @on(ToggleGuides)
+    def action_toggle_guides_command(self) -> None:
+        """Toggle the display of the guides panel."""
+        self.guides_visible = not self.guides_visible
 
 
 ### main.py ends here
