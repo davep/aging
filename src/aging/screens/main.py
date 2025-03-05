@@ -31,6 +31,7 @@ from textual_fspicker import SelectDirectory
 from .. import __version__
 from ..commands import AddGuidesToDirectory
 from ..data import Guide, Guides, load_guides, save_guides
+from ..messages import OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory
 
@@ -96,6 +97,9 @@ class Main(EnhancedScreen[None]):
     guides: var[Guides] = var(Guides)
     """The directory of Norton Guides."""
 
+    current_guide: var[NortonGuide | None] = var(None)
+    """The currently-opened Norton Guide."""
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
@@ -152,6 +156,15 @@ class Main(EnhancedScreen[None]):
             SelectDirectory(title="Add Norton Guides From...")
         ):
             self._add_guides_from(add_from)
+
+    @on(OpenGuide)
+    def _open_guide(self, message: OpenGuide) -> None:
+        """Handle a request to open a guide.
+
+        Args:
+            message: The message requesting a guide be opened.
+        """
+        self.notify(f"{message.location}")
 
 
 ### main.py ends here
