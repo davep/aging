@@ -7,8 +7,13 @@ from __future__ import annotations
 ##############################################################################
 # Python imports.
 from dataclasses import dataclass
+from json import dumps, loads
 from pathlib import Path
 from typing import TypeAlias
+
+##############################################################################
+# Local imports.
+from .locations import data_dir
 
 
 ##############################################################################
@@ -43,5 +48,45 @@ class Guide:
 ##############################################################################
 Guides: TypeAlias = list[Guide]
 """The type of a collection of registered guides."""
+
+
+##############################################################################
+def guides_file() -> Path:
+    """The path to the guides file.
+
+    Returns:
+        The path where the guides directory is held.
+    """
+    return data_dir() / "guides.json"
+
+
+##############################################################################
+def save_guides(guides: Guides) -> None:
+    """Save the guide directory to storage.
+
+    Args:
+        guides: The guides to save.
+    """
+    guides_file().write_text(
+        dumps([guide.as_json for guide in guides], indent=4, encoding="utf-8")
+    )
+
+
+##############################################################################
+def load_guides() -> Guides:
+    """Load the guide directory from storage.
+
+    Returns:
+        The guides in the directory.
+    """
+    return (
+        [
+            Guide.from_json(data)
+            for data in loads(guides_file().read_text(encoding="utf-8"))
+        ]
+        if guides_file().exists()
+        else []
+    )
+
 
 ### guides.py ends here
