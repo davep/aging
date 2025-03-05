@@ -6,7 +6,7 @@ from pathlib import Path
 
 ##############################################################################
 # NGDB imports.
-from ngdb import NortonGuide
+from ngdb import NortonGuide, make_dos_like
 
 ##############################################################################
 # Textual imports.
@@ -134,7 +134,7 @@ class Main(EnhancedScreen[None]):
             if candidate.suffix.lower() == ".ng":
                 with NortonGuide(candidate) as guide:
                     if guide.is_a:
-                        guides.append(Guide(guide.title, guide.path))
+                        guides.append(Guide(make_dos_like(guide.title), guide.path))
         if guides:
             self.app.call_from_thread(self._new_guides, guides)
 
