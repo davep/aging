@@ -57,7 +57,10 @@ class Guide:
         if isinstance(value, str):
             return self.title.casefold() == value.casefold()
         if isinstance(value, Path):
-            return isinstance(self.location, Path) and self.location == value
+            return (
+                isinstance(self.location, Path)
+                and self.location.resolve() == value.resolve()
+            )
         raise NotImplementedError
 
 
