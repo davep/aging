@@ -7,6 +7,7 @@ from __future__ import annotations
 ##############################################################################
 # Python imports.
 from dataclasses import dataclass
+from functools import total_ordering
 from json import dumps, loads
 from pathlib import Path
 from typing import TypeAlias
@@ -18,6 +19,7 @@ from .locations import data_dir
 
 ##############################################################################
 @dataclass(frozen=True)
+@total_ordering
 class Guide:
     """Details of a Norton Guide that's registered with the application."""
 
@@ -43,6 +45,20 @@ class Guide:
     def as_json(self) -> dict[str, str]:
         """The guide in a JSON-friendly format."""
         return {"title": self.title, "location": str(self.location)}
+
+    def __gt__(self, value: object, /) -> bool:
+        if isinstance(value, Guide):
+            return self.title.casefold() > value.title.casefold()
+        raise NotImplementedError
+
+    def __eq__(self, value: object, /) -> bool:
+        if isinstance(value, Guide):
+            return self.title.casefold() == value.title.casefold()
+        if isinstance(value, str):
+            return self.title.casefold() == value.casefold()
+        if isinstance(value, Path):
+            return isinstance(self.location, Path) and self.location == value
+        raise NotImplementedError
 
 
 ##############################################################################
