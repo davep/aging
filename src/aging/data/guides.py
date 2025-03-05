@@ -84,7 +84,7 @@ def save_guides(guides: Guides) -> None:
         guides: The guides to save.
     """
     guides_file().write_text(
-        dumps([guide.as_json for guide in guides], indent=4, encoding="utf-8")
+        dumps([guide.as_json for guide in guides], indent=4), encoding="utf-8"
     )
 
 
