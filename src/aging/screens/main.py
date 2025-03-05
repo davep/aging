@@ -6,7 +6,7 @@ from pathlib import Path
 
 ##############################################################################
 # NGDB imports.
-from ngdb import NortonGuide, make_dos_like
+from ngdb import Entry, NortonGuide, make_dos_like
 
 ##############################################################################
 # Textual imports.
@@ -100,13 +100,25 @@ class Main(EnhancedScreen[None]):
     current_guide: var[NortonGuide | None] = var(None)
     """The currently-opened Norton Guide."""
 
+    current_entry: var[Entry | None] = var(None)
+    """The entry that is being currently viewed."""
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
         with HorizontalGroup(id="workspace"):
             yield GuideDirectory(classes="panel").data_bind(Main.guides)
-            yield EntryViewer(classes="panel")
+            yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
         yield Footer()
+
+    def _watch_current_guide(self) -> None:
+        """React to the current guide being changed."""
+        if self.current_guide is None:
+            self.sub_title = ""
+            self.current_entry = None
+        else:
+            self.sub_title = self.current_guide.title
+            self.current_entry = self.current_guide.load()
 
     def on_mount(self) -> None:
         """Configure the screen once the DOM is mounted."""
@@ -164,7 +176,29 @@ class Main(EnhancedScreen[None]):
         Args:
             message: The message requesting a guide be opened.
         """
-        self.notify(f"{message.location}")
+        # TO start with, let's be sure that the guide is there and it
+        # actually is a guide.
+        try:
+            new_guide = NortonGuide(message.location)
+        except IOError as error:
+            self.notify(
+                str(error), title=f"Error opening {message.location}", severity="error"
+            )
+            return
+        if not (new_guide := NortonGuide(message.location)).is_a:
+            self.notify(
+                "That file doesn't appear to be a valid Norton Guide",
+                title=str(message.location),
+                severity="error",
+            )
+            return
+
+        # If there is a guide already open, ensure it gets closed.
+        if self.current_guide is not None:
+            self.current_guide.close()
+
+        # Looks good.
+        self.current_guide = new_guide
 
 
 ### main.py ends here
