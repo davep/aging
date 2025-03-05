@@ -114,10 +114,16 @@ class Main(EnhancedScreen[None]):
         Args:
             guides: The new guides to add.
         """
-        self.guides = sorted(
-            self.guides + [guide for guide in guides if guide not in self.guides]
-        )
-        save_guides(self.guides)
+        # Try and ensure we don't get duplicates based on location;
+        # duplicates based on title are fine and it's up to the user to
+        # decide if they want to remove them or not.
+        guides = [guide for guide in guides if guide.location not in self.guides]
+        if guides:
+            self.guides = sorted(self.guides + guides)
+            save_guides(self.guides)
+            self.notify(f"New guides scanned and added: {len(guides)}")
+        else:
+            self.notify("No new guides found", severity="warning")
 
     @work(thread=True)
     def _add_guides_from(self, directory: Path) -> None:
