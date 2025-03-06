@@ -26,6 +26,8 @@ from textual_enhanced.screen import EnhancedScreen
 # Textual fspicker imports.
 from textual_fspicker import SelectDirectory
 
+from aging.commands.main import ChangeGuidesSide
+
 ##############################################################################
 # Local imports.
 from .. import __version__
@@ -106,6 +108,7 @@ class Main(EnhancedScreen[None]):
         Quit,
         # The following don't need to be in a specific order.
         AddGuidesToDirectory,
+        ChangeGuidesSide,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -123,11 +126,16 @@ class Main(EnhancedScreen[None]):
     guides_visible: var[bool] = var(True)
     """Should the guides directory be visible?"""
 
+    guides_on_right: var[bool] = var(False, init=False)
+    """Should the guides directory be docked to the right?"""
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
         with HorizontalGroup(id="workspace"):
-            yield GuideDirectory(classes="panel").data_bind(Main.guides)
+            yield GuideDirectory(classes="panel").data_bind(
+                Main.guides, dock_right=Main.guides_on_right
+            )
             yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
         yield Footer()
 
@@ -146,11 +154,17 @@ class Main(EnhancedScreen[None]):
         with update_configuration() as config:
             config.guides_directory_visible = self.guides_visible
 
+    def _watch_guides_on_right(self) -> None:
+        """React to the guides location being changed."""
+        with update_configuration() as config:
+            config.guides_directory_on_right = self.guides_on_right
+
     def on_mount(self) -> None:
         """Configure the screen once the DOM is mounted."""
         self.guides = load_guides()
         config = load_configuration()
         self.guides_visible = config.guides_directory_visible
+        self.guides_on_right = config.guides_directory_on_right
 
     def _new_guides(self, guides: Guides) -> None:
         """Add a list of new guides to the guide directory.
@@ -232,6 +246,11 @@ class Main(EnhancedScreen[None]):
     def action_toggle_guides_command(self) -> None:
         """Toggle the display of the guides panel."""
         self.guides_visible = not self.guides_visible
+
+    @on(ChangeGuidesSide)
+    def action_change_guides_side_command(self) -> None:
+        """Change which side the guides directory is docked to."""
+        self.guides_on_right = not self.guides_on_right
 
 
 ### main.py ends here

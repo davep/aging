@@ -25,6 +25,9 @@ class Configuration:
     guides_directory_visible: bool = True
     """Is the guides directory visible?"""
 
+    guides_directory_on_right: bool = False
+    """Should the guide directory be docked to the right?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:

@@ -44,11 +44,19 @@ class GuideDirectory(EnhancedOptionList):
         background: transparent;
         height: 1fr;
         border: none;
+
         &:focus {
             border: none;
         }
+
+        &.--dock-right {
+            dock: right;
+        }
     }
     """
+
+    dock_right: var[bool] = var(False)
+    """Should the directory dock to the right?"""
 
     guides: var[Guides] = var(Guides)
     """The guides in the directory."""
@@ -57,6 +65,10 @@ class GuideDirectory(EnhancedOptionList):
         """React to the guides being changed."""
         with self.preserved_highlight:
             self.clear_options().add_options(GuideView(guide) for guide in self.guides)
+
+    def _watch_dock_right(self) -> None:
+        """React to the dock toggle being changed."""
+        self.set_class(self.dock_right, "--dock-right")
 
     @on(EnhancedOptionList.OptionSelected)
     def _open_guide(self, message: EnhancedOptionList.OptionSelected) -> None:

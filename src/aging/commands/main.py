@@ -14,4 +14,11 @@ class ToggleGuides(Command):
     FOOTER_TEXT = "Guides"
 
 
+##############################################################################
+class ChangeGuidesSide(Command):
+    """Change which side the guides directory loves on"""
+
+    BINDING_KEY = "shift+f2"
+
+
 ### main.py ends here
