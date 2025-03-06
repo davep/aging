@@ -26,13 +26,18 @@ from textual_enhanced.screen import EnhancedScreen
 # Textual fspicker imports.
 from textual_fspicker import SelectDirectory
 
-from aging.data.config import load_configuration
-
 ##############################################################################
 # Local imports.
 from .. import __version__
 from ..commands import AddGuidesToDirectory, ToggleGuides
-from ..data import Guide, Guides, load_guides, save_guides, update_configuration
+from ..data import (
+    Guide,
+    Guides,
+    load_configuration,
+    load_guides,
+    save_guides,
+    update_configuration,
+)
 from ..messages import OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory
