@@ -33,4 +33,4 @@ class EntryViewer(VerticalGroup):
         self.set_class(self.entry is None, "--no-entry")
 
 
-### entry_viewer.py ends here
+### widget.py ends here
