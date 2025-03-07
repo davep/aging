@@ -130,7 +130,7 @@ class GuideMenu(EnhancedOptionList):
             message: The message requesting the option is selected.
         """
         if isinstance(message.option, TopLevelMenu):
-            self.highlighted = self.get_option_index(message.option.first_child_id)
+            self.call_next(self.run_action, "cursor_down")
         elif isinstance(message.option, MenuPrompt):
             self.post_message(OpenEntry(message.option.offset))
 
