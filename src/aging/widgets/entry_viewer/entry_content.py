@@ -109,6 +109,8 @@ class EntryContent(EnhancedOptionList):
                 )
             elif isinstance(self.entry, Long):
                 self.add_options(PlainLine(line) for line in self.entry)
+            if self.option_count:
+                self.highlighted = 0
 
     @on(EnhancedOptionList.OptionSelected)
     def _line_selected(self, message: EnhancedOptionList.OptionSelected) -> None:
