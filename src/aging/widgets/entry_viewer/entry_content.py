@@ -34,7 +34,11 @@ class PlainLine(Option):
     """An option that just displays some text."""
 
     def __init__(self, line: str) -> None:
-        """The link to another location in the guide."""
+        """A plain line in an entry.
+
+        Args:
+            line: The line to display.
+        """
         super().__init__(Text.from_markup(str(RichText(line))))
 
 
@@ -43,6 +47,11 @@ class JumpLine(Option):
     """An option that jumps elsewhere in the guide."""
 
     def __init__(self, line: Link) -> None:
+        """A line in an entry that links to another entry in a guide.
+
+        Args:
+            line: The line that links elsewhere.
+        """
         self._line = line
         """The link to another location in the guide."""
         super().__init__(Text.from_markup(str(RichText(line.text))))
