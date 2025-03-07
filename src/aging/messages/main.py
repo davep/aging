@@ -18,6 +18,9 @@ class OpenGuide(Message):
     location: Path
     """The path to the file to open."""
 
+    initial_offset: int | None = None
+    """The optional offset of an entry to open once the guide is opened."""
+
 
 ##############################################################################
 @dataclass

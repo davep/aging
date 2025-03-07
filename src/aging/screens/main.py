@@ -128,10 +128,10 @@ class Main(EnhancedScreen[None]):
     guides: var[Guides] = var(Guides)
     """The directory of Norton Guides."""
 
-    current_guide: var[NortonGuide | None] = var(None)
+    current_guide: var[NortonGuide | None] = var(None, init=False)
     """The currently-opened Norton Guide."""
 
-    current_entry: var[Entry | None] = var(None)
+    current_entry: var[Entry | None] = var(None, init=False)
     """The entry that is being currently viewed."""
 
     guides_visible: var[bool] = var(True)
@@ -153,6 +153,10 @@ class Main(EnhancedScreen[None]):
 
     def _watch_current_guide(self) -> None:
         """React to the current guide being changed."""
+        with update_configuration() as config:
+            config.current_guide = (
+                None if self.current_guide is None else str(self.current_guide.path)
+            )
         if self.current_guide is None:
             self.sub_title = ""
             self.current_entry = None
@@ -173,6 +177,10 @@ class Main(EnhancedScreen[None]):
 
     def _watch_current_entry(self) -> None:
         """React to the current entry being changed."""
+        with update_configuration() as config:
+            config.current_entry = (
+                None if self.current_entry is None else self.current_entry.offset
+            )
         self.refresh_bindings()
 
     def on_mount(self) -> None:
@@ -181,6 +189,10 @@ class Main(EnhancedScreen[None]):
         config = load_configuration()
         self.guides_visible = config.guides_directory_visible
         self.guides_on_right = config.guides_directory_on_right
+        if config.current_guide:
+            self.post_message(
+                OpenGuide(Path(config.current_guide), config.current_entry)
+            )
 
     def _new_guides(self, guides: Guides) -> None:
         """Add a list of new guides to the guide directory.
@@ -278,6 +290,11 @@ class Main(EnhancedScreen[None]):
         # If there is a guide already open, ensure it gets closed.
         if self.current_guide is not None:
             self.current_guide.close()
+
+        # If we're being asked to jump to a specific entry, to start with,
+        # make sure we're there...
+        if message.initial_offset is not None:
+            new_guide.goto(message.initial_offset)
 
         # Looks good.
         self.current_guide = new_guide

@@ -28,6 +28,12 @@ class Configuration:
     guides_directory_on_right: bool = False
     """Should the guide directory be docked to the right?"""
 
+    current_guide: str | None = None
+    """The guide the user is currently viewing."""
+
+    current_entry: int | None = None
+    """The entry the user is currently viewing."""
+
 
 ##############################################################################
 def configuration_file() -> Path:
