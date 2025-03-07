@@ -1,4 +1,4 @@
-"""Provides the widget for viewing a guide entry."""
+"""Provides the widget that displays the entry's content."""
 
 ##############################################################################
 # NGDB imports.
@@ -6,26 +6,26 @@ from ngdb import Entry
 
 ##############################################################################
 # Textual imports.
-from textual.app import ComposeResult
-from textual.containers import VerticalGroup
 from textual.reactive import var
 
 ##############################################################################
-# Local imports.
-from .entry_content import EntryContent
+# Textual enhanced imports.
+from textual_enhanced.widgets import EnhancedOptionList
 
 
 ##############################################################################
-class EntryViewer(VerticalGroup):
-    """The entry viewer widget."""
+class EntryContent(EnhancedOptionList):
+    """Widget that displays the content of a Norton Guide entry."""
 
     DEFAULT_CSS = """
-    EntryViewer {
+    EntryContent {
+        width: 1fr;
         height: 1fr;
-        display: block;
+        background: transparent;
+        border: none;
 
-        &.--no-entry {
-            display: none;
+        &:focus {
+            border: none;
         }
     }
     """
@@ -35,11 +35,9 @@ class EntryViewer(VerticalGroup):
 
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
-        self.set_class(self.entry is None, "--no-entry")
-
-    def compose(self) -> ComposeResult:
-        """Compose the content of the widget."""
-        yield EntryContent().data_bind(EntryViewer.entry)
+        self.clear_options()
+        if self.entry is not None:
+            self.add_options(self.entry.lines)
 
 
-### widget.py ends here
+### entry_content.py ends here
