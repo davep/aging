@@ -74,6 +74,10 @@ class GuideMenu(EnhancedOptionList):
         &:focus {
             border: none;
         }
+
+        &.--no-guide {
+            display: none;
+        }
     }
     """
 
@@ -82,6 +86,7 @@ class GuideMenu(EnhancedOptionList):
 
     def _watch_guide(self) -> None:
         """Handle the current guide being changed."""
+        self.set_class(self.guide is None, "--no-guide")
         self.clear_options()
         if self.guide is not None:
             for menu in self.guide.menus:
