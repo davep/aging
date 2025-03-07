@@ -1,11 +1,6 @@
 """Provides the widget that displays the entry's content."""
 
 ##############################################################################
-# Python imports.
-from functools import singledispatchmethod
-from typing import Iterator
-
-##############################################################################
 # NGDB imports.
 from ngdb import Entry, Long, Short
 from ngdb.link import Link
@@ -62,33 +57,19 @@ class EntryContent(EnhancedOptionList):
     """
 
     entry: var[Entry | None] = var(None)
-    """The entry being viewed, or [`None`][None] if no entry."""
-
-    @singledispatchmethod
-    def _content(self, entry: Entry) -> Iterator[Option]:
-        """Generate the content for the given entry.
-
-        Args:
-            entry: The entry to generate the content for.
-
-        Yields:
-            Lines for the content.
-        """
-        yield from ()
-
-    @_content.register
-    def _(self, entry: Short) -> Iterator[Option]:
-        return ((JumpLine if line.has_offset else PlainLine)(line) for line in entry)
-
-    @_content.register
-    def _(self, entry: Long) -> Iterator[Option]:
-        return (PlainLine(line) for line in entry)
+    """The [entry][ngdb.Entry] being viewed, or [`None`][None] if no entry."""
 
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
         self.clear_options()
         if self.entry is not None:
-            self.add_options(self._content(self.entry))
+            if isinstance(self.entry, Short):
+                self.add_options(
+                    JumpLine(line) if line.has_offset else PlainLine(line.text)
+                    for line in self.entry
+                )
+            elif isinstance(self.entry, Long):
+                self.add_options(PlainLine(line) for line in self.entry)
 
 
 ### entry_content.py ends here
