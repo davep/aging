@@ -31,13 +31,12 @@ from textual_enhanced.screen import EnhancedScreen
 # Textual fspicker imports.
 from textual_fspicker import SelectDirectory
 
-from aging.commands.main import ChangeGuidesSide
-
 ##############################################################################
 # Local imports.
 from .. import __version__
 from ..commands import (
     AddGuidesToDirectory,
+    ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
     ToggleGuides,
