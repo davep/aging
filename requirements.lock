@@ -32,7 +32,7 @@ textual==2.1.2
     # via aging
     # via textual-enhanced
     # via textual-fspicker
-textual-enhanced==0.7.0
+textual-enhanced==0.7.1
     # via aging
 textual-fspicker==0.4.1
     # via aging

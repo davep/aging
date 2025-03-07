@@ -10,7 +10,7 @@
 #   universal: false
 
 -e file:.
-aiohappyeyeballs==2.4.6
+aiohappyeyeballs==2.5.0
     # via aiohttp
 aiohttp==3.11.13
     # via aiohttp-jinja2
@@ -39,7 +39,7 @@ idna==3.10
     # via yarl
 iniconfig==2.0.0
     # via pytest
-jinja2==3.1.5
+jinja2==3.1.6
     # via aiohttp-jinja2
     # via textual-serve
 linkify-it-py==2.0.3
@@ -79,7 +79,7 @@ propcache==0.3.0
     # via yarl
 pygments==2.19.1
     # via rich
-pytest==8.3.4
+pytest==8.3.5
 pyyaml==6.0.2
     # via pre-commit
 rich==13.9.4
@@ -92,7 +92,7 @@ textual==2.1.2
     # via textual-fspicker
     # via textual-serve
 textual-dev==1.7.0
-textual-enhanced==0.7.0
+textual-enhanced==0.7.1
     # via aging
 textual-fspicker==0.4.1
     # via aging
@@ -106,7 +106,7 @@ typing-extensions==4.12.2
     # via textual-dev
 uc-micro-py==1.0.3
     # via linkify-it-py
-virtualenv==20.29.2
+virtualenv==20.29.3
     # via pre-commit
 xdg-base-dirs==6.0.2
     # via aging
