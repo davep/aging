@@ -6,7 +6,12 @@ from pathlib import Path
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, NortonGuide, make_dos_like
+from ngdb import Entry, NortonGuide, PlainText, make_dos_like
+
+##############################################################################
+# Pyperclip imports.
+from pyperclip import PyperclipException
+from pyperclip import copy as copy_to_clipboard
 
 ##############################################################################
 # Textual imports.
@@ -31,7 +36,12 @@ from aging.commands.main import ChangeGuidesSide
 ##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import AddGuidesToDirectory, ToggleGuides
+from ..commands import (
+    AddGuidesToDirectory,
+    CopyEntrySourceToClipboard,
+    CopyEntryToClipboard,
+    ToggleGuides,
+)
 from ..data import (
     Guide,
     Guides,
@@ -40,7 +50,7 @@ from ..data import (
     save_guides,
     update_configuration,
 )
-from ..messages import OpenEntry, OpenGuide
+from ..messages import CopyToClipboard, OpenEntry, OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 
@@ -109,6 +119,8 @@ class Main(EnhancedScreen[None]):
         # The following don't need to be in a specific order.
         AddGuidesToDirectory,
         ChangeGuidesSide,
+        CopyEntryToClipboard,
+        CopyEntrySourceToClipboard,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -262,6 +274,46 @@ class Main(EnhancedScreen[None]):
     def action_change_guides_side_command(self) -> None:
         """Change which side the guides directory is docked to."""
         self.guides_on_right = not self.guides_on_right
+
+    @on(CopyToClipboard)
+    def _copy_text_to_clipbaord(self, message: CopyToClipboard) -> None:
+        """Copy some text into the clipboard.
+
+        Args:
+            message: The message requesting the text be copied.
+        """
+        # First off, use Textual's own copy to clipboard facility. Generally
+        # this will work in most terminals, and if it does it'll likely work
+        # best, getting the text through remote connections to the user's
+        # own environment.
+        self.app.copy_to_clipboard(message.text)
+        # However, as a backup, use pyerclip too. If the above did fail due
+        # to the terminal not supporting the operation, this might.
+        try:
+            copy_to_clipboard(message.text)
+        except PyperclipException:
+            pass
+        # Give the user some feedback.
+        self.notify("Copied")
+
+    @on(CopyEntryToClipboard)
+    def action_copy_entry_to_clipboard_command(self) -> None:
+        """Copy the text of the current entry to the clipboard."""
+        if self.current_entry is not None:
+            self.post_message(
+                CopyToClipboard(
+                    "\n".join(
+                        make_dos_like(str(PlainText(line)))
+                        for line in self.current_entry.lines
+                    )
+                )
+            )
+
+    @on(CopyEntrySourceToClipboard)
+    def action_copy_entry_source_to_clipboard_command(self) -> None:
+        """Copy the source of the current entry to the clipboard."""
+        if self.current_entry is not None:
+            self.post_message(CopyToClipboard(make_dos_like(str(self.current_entry))))
 
 
 ### main.py ends here

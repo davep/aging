@@ -79,6 +79,8 @@ propcache==0.3.0
     # via yarl
 pygments==2.19.1
     # via rich
+pyperclip==1.9.0
+    # via aging
 pytest==8.3.5
 pyyaml==6.0.2
     # via pre-commit

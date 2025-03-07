@@ -12,6 +12,7 @@ dependencies = [
     "typing-extensions>=4.12.2",
     "xdg-base-dirs>=6.0.2",
     "textual-fspicker>=0.4.1",
+    "pyperclip>=1.9.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.9"

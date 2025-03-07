@@ -26,6 +26,8 @@ platformdirs==4.3.6
     # via textual
 pygments==2.19.1
     # via rich
+pyperclip==1.9.0
+    # via aging
 rich==13.9.4
     # via textual
 textual==2.1.2

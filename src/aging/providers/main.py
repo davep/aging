@@ -12,7 +12,13 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import AddGuidesToDirectory, ChangeGuidesSide, ToggleGuides
+from ..commands import (
+    AddGuidesToDirectory,
+    ChangeGuidesSide,
+    CopyEntrySourceToClipboard,
+    CopyEntryToClipboard,
+    ToggleGuides,
+)
 
 
 ##############################################################################
@@ -28,9 +34,11 @@ class MainCommands(CommandsProvider):
         yield AddGuidesToDirectory()
         yield ChangeGuidesSide()
         yield ChangeTheme()
+        yield CopyEntryToClipboard()
+        yield CopyEntrySourceToClipboard()
         yield Help()
-        yield ToggleGuides()
         yield Quit()
+        yield ToggleGuides()
 
 
 ### main.py ends here

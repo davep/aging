@@ -3,11 +3,22 @@
 ##############################################################################
 # Local imports.
 from .guide_management import AddGuidesToDirectory
-from .main import ChangeGuidesSide, ToggleGuides
+from .main import (
+    ChangeGuidesSide,
+    CopyEntrySourceToClipboard,
+    CopyEntryToClipboard,
+    ToggleGuides,
+)
 
 ##############################################################################
 # Exports.
-__all__ = ["AddGuidesToDirectory", "ChangeGuidesSide", "ToggleGuides"]
+__all__ = [
+    "AddGuidesToDirectory",
+    "CopyEntryToClipboard",
+    "CopyEntrySourceToClipboard",
+    "ChangeGuidesSide",
+    "ToggleGuides",
+]
 
 
 ### __init__.py ends here

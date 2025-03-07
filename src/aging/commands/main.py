@@ -21,4 +21,18 @@ class ChangeGuidesSide(Command):
     BINDING_KEY = "shift+f2"
 
 
+##############################################################################
+class CopyEntryToClipboard(Command):
+    """Copy the text of the current entry to the clipboard"""
+
+    BINDING_KEY = "f5"
+
+
+##############################################################################
+class CopyEntrySourceToClipboard(Command):
+    """Copy the source of the current entry to the clipboard"""
+
+    BINDING_KEY = "shift+f5"
+
+
 ### main.py ends here
