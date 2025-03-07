@@ -6,7 +6,7 @@ from typing import Iterable
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Long, Short
+from ngdb import Entry, Long, Short, make_dos_like
 from ngdb.link import Link
 from ngdb.parser import RichText
 
@@ -30,6 +30,21 @@ from ...messages import OpenEntry
 
 
 ##############################################################################
+class TextualRichText(RichText):
+    """A Rich parser that works better in Textual.
+
+    I've run into an issue, and this might be a Textual <2.0 vs >=2.0 thing
+    too, I don't know, where the output of the Rich parser works fine in the
+    console, with Rich, but not great in Textual.
+
+    This version tweaks how text is handled to make things work better.
+    """
+
+    def text(self, text: str) -> None:
+        super().text(make_dos_like(text).replace("\\", "\\\\"))
+
+
+##############################################################################
 class PlainLine(Option):
     """An option that just displays some text."""
 
@@ -39,7 +54,7 @@ class PlainLine(Option):
         Args:
             line: The line to display.
         """
-        super().__init__(Text.from_markup(str(RichText(line))))
+        super().__init__(Text.from_markup(str(TextualRichText(line))))
 
 
 ##############################################################################
@@ -54,7 +69,7 @@ class JumpLine(Option):
         """
         self._line = line
         """The link to another location in the guide."""
-        super().__init__(Text.from_markup(str(RichText(line.text))))
+        super().__init__(Text.from_markup(str(TextualRichText(line.text))))
 
     @property
     def link(self) -> Link:
