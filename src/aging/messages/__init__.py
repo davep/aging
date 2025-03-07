@@ -2,11 +2,11 @@
 
 ##############################################################################
 # Local imports.
-from .main import OpenGuide
+from .main import OpenEntry, OpenGuide
 
 ##############################################################################
 # Exports.
-__all__ = ["OpenGuide"]
+__all__ = ["OpenEntry", "OpenGuide"]
 
 
 ### __init__.py ends here

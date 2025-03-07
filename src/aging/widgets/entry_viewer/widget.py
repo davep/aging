@@ -31,6 +31,8 @@ class EntryViewer(VerticalGroup):
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
         self.set_class(self.entry is None, "--no-entry")
+        if self.entry is not None:
+            self.notify(f"TODO: Show {self.entry!r}")
 
 
 ### widget.py ends here

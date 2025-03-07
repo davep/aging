@@ -19,4 +19,13 @@ class OpenGuide(Message):
     """The path to the file to open."""
 
 
+##############################################################################
+@dataclass
+class OpenEntry(Message):
+    """Message that requests an entry be opened."""
+
+    location: int
+    """The location of the entry to open."""
+
+
 ### main.py ends here

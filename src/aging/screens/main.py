@@ -40,9 +40,9 @@ from ..data import (
     save_guides,
     update_configuration,
 )
-from ..messages import OpenGuide
+from ..messages import OpenEntry, OpenGuide
 from ..providers import MainCommands
-from ..widgets import EntryViewer, GuideDirectory
+from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 
 
 ##############################################################################
@@ -136,6 +136,7 @@ class Main(EnhancedScreen[None]):
             yield GuideDirectory(classes="panel").data_bind(
                 Main.guides, dock_right=Main.guides_on_right
             )
+            yield GuideMenu(classes="panel").data_bind(guide=Main.current_guide)
             yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
         yield Footer()
 
@@ -241,6 +242,16 @@ class Main(EnhancedScreen[None]):
 
         # Looks good.
         self.current_guide = new_guide
+
+    @on(OpenEntry)
+    def _open_entry(self, message: OpenEntry) -> None:
+        """Handle a request to open an entry.
+
+        Args:
+            message: The message requesting an entry be opened.
+        """
+        if self.current_guide is not None:
+            self.current_entry = self.current_guide.goto(message.location).load()
 
     @on(ToggleGuides)
     def action_toggle_guides_command(self) -> None:
