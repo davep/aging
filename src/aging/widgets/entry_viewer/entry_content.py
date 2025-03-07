@@ -3,6 +3,11 @@
 ##############################################################################
 # NGDB imports.
 from ngdb import Entry
+from ngdb.parser import RichText
+
+##############################################################################
+# Rich imports.
+from rich.text import Text
 
 ##############################################################################
 # Textual imports.
@@ -37,7 +42,9 @@ class EntryContent(EnhancedOptionList):
         """React to the entry being changed."""
         self.clear_options()
         if self.entry is not None:
-            self.add_options(self.entry.lines)
+            self.add_options(
+                Text.from_markup(str(RichText(line))) for line in self.entry.lines
+            )
 
 
 ### entry_content.py ends here
