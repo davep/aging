@@ -171,6 +171,10 @@ class Main(EnhancedScreen[None]):
         with update_configuration() as config:
             config.guides_directory_on_right = self.guides_on_right
 
+    def _watch_current_entry(self) -> None:
+        """React to the current entry being changed."""
+        self.refresh_bindings()
+
     def on_mount(self) -> None:
         """Configure the screen once the DOM is mounted."""
         self.guides = load_guides()
