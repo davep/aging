@@ -16,12 +16,17 @@ from rich.text import Text
 
 ##############################################################################
 # Textual imports.
+from textual import on
 from textual.reactive import var
 from textual.widgets.option_list import Option
 
 ##############################################################################
 # Textual enhanced imports.
 from textual_enhanced.widgets import EnhancedOptionList
+
+##############################################################################
+# Local imports.
+from ...messages import OpenEntry
 
 
 ##############################################################################
@@ -41,6 +46,11 @@ class JumpLine(Option):
         self._line = line
         """The link to another location in the guide."""
         super().__init__(Text.from_markup(str(RichText(line.text))))
+
+    @property
+    def link(self) -> Link:
+        """The link data for the jump line."""
+        return self._line
 
 
 ##############################################################################
@@ -75,6 +85,20 @@ class EntryContent(EnhancedOptionList):
                 )
             elif isinstance(self.entry, Long):
                 self.add_options(PlainLine(line) for line in self.entry)
+
+    @on(EnhancedOptionList.OptionSelected)
+    def _line_selected(self, message: EnhancedOptionList.OptionSelected) -> None:
+        """Handle a line being selected in the entry.
+
+        Args:
+            message: The message telling us that a line was selected.
+        """
+        message.stop()
+        if isinstance(message.option, PlainLine):
+            return
+        assert isinstance(message.option, JumpLine)
+        if message.option.link.has_offset:
+            self.post_message(OpenEntry(message.option.link.offset))
 
 
 ### entry_content.py ends here
