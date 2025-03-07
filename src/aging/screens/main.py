@@ -58,7 +58,7 @@ from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 class Main(EnhancedScreen[None]):
     """The main screen for the application."""
 
-    TITLE = f"Aging v{__version__}"
+    TITLE = f"AgiNG v{__version__}"
 
     DEFAULT_CSS = """
     Main {

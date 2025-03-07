@@ -19,10 +19,10 @@ from .screens import Main
 
 
 ##############################################################################
-class Aging(EnhancedApp[None]):
+class AgiNG(EnhancedApp[None]):
     """The main application class."""
 
-    HELP_TITLE = f"Aging {__version__}"
+    HELP_TITLE = f"AgiNG {__version__}"
     HELP_ABOUT = "There will be more here."
     HELP_LICENSE = "License information will go here."
 

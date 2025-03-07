@@ -1,4 +1,4 @@
-"""Aging -- A Norton Guide reader for the terminal."""
+"""AgiNG -- A Norton Guide reader for the terminal."""
 
 ##############################################################################
 # Python imports.
