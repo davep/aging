@@ -147,7 +147,9 @@ class Main(EnhancedScreen[None]):
             yield GuideDirectory(classes="panel").data_bind(
                 Main.guides, Main.current_guide, dock_right=Main.guides_on_right
             )
-            yield GuideMenu(classes="panel").data_bind(guide=Main.current_guide)
+            yield GuideMenu(classes="panel").data_bind(
+                Main.current_entry, guide=Main.current_guide
+            )
             yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
         yield Footer()
 
