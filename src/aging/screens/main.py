@@ -214,6 +214,30 @@ class Main(EnhancedScreen[None]):
         if guides:
             self.app.call_from_thread(self._new_guides, guides)
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """Check if an action is possible to perform right now.
+
+        Args:
+            action: The action to perform.
+            parameters: The parameters of the action.
+
+        Returns:
+            `True` if it can perform, `False` or `None` if not.
+        """
+        if not self.is_mounted:
+            # Surprisingly it seems that Textual's "dynamic bindings" can
+            # cause this method to be called before the DOM is up and
+            # running. This breaks the rule of least astonishment, I'd say,
+            # but okay let's be defensive... (when I can come up with a nice
+            # little MRE I'll report it).
+            return True
+        if action in (
+            command.action_name()
+            for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
+        ):
+            return self.current_entry is not None
+        return True
+
     @on(AddGuidesToDirectory)
     @work
     async def action_add_guides_to_directory_command(self) -> None:
