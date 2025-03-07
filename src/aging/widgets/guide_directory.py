@@ -1,10 +1,14 @@
 """Provides the guide directory widget."""
 
 ##############################################################################
+# NGDB imports.
+from ngdb import NortonGuide
+
+##############################################################################
 # Textual imports.
 from textual import on
 from textual.reactive import var
-from textual.widgets.option_list import Option
+from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
@@ -61,6 +65,15 @@ class GuideDirectory(EnhancedOptionList):
     guides: var[Guides] = var(Guides)
     """The guides in the directory."""
 
+    current_guide: var[NortonGuide | None] = var(None)
+    """The currently-selected guide.
+
+    Note:
+        This isn't the currently-highlighted guide, this is the guide that
+        has been selected for display. Setting this will move the highlight
+        in the widget to the correct position.
+    """
+
     def _watch_guides(self) -> None:
         """React to the guides being changed."""
         with self.preserved_highlight:
@@ -69,6 +82,17 @@ class GuideDirectory(EnhancedOptionList):
     def _watch_dock_right(self) -> None:
         """React to the dock toggle being changed."""
         self.set_class(self.dock_right, "--dock-right")
+
+    def _watch_current_guide(self) -> None:
+        """React to the current guide being set."""
+        try:
+            self.highlighted = (
+                self.get_option_index(str(self.current_guide))
+                if self.current_guide is not None
+                else None
+            )
+        except OptionDoesNotExist:
+            pass
 
     @on(EnhancedOptionList.OptionSelected)
     def _open_guide(self, message: EnhancedOptionList.OptionSelected) -> None:

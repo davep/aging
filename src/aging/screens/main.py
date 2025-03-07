@@ -145,7 +145,7 @@ class Main(EnhancedScreen[None]):
         yield Header()
         with HorizontalGroup(id="workspace"):
             yield GuideDirectory(classes="panel").data_bind(
-                Main.guides, dock_right=Main.guides_on_right
+                Main.guides, Main.current_guide, dock_right=Main.guides_on_right
             )
             yield GuideMenu(classes="panel").data_bind(guide=Main.current_guide)
             yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
