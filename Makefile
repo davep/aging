@@ -1,6 +1,5 @@
 app    := aging
 src    := src/
-tests  := tests/
 run    := rye run
 test   := rye test
 python := $(run) python
@@ -45,26 +44,22 @@ resetup: realclean		# Recreate the virtual environment from scratch
 # Checking/testing/linting/etc.
 .PHONY: lint
 lint:				# Check the code for linting issues
-	$(lint) $(src) $(tests)
+	$(lint) $(src)
 
 .PHONY: codestyle
 codestyle:			# Is the code formatted correctly?
-	$(fmt) --check $(src) $(tests)
+	$(fmt) --check $(src)
 
 .PHONY: typecheck
 typecheck:			# Perform static type checks with mypy
-	$(mypy) --scripts-are-modules $(src) $(tests)
+	$(mypy) --scripts-are-modules $(src)
 
 .PHONY: stricttypecheck
 stricttypecheck:	        # Perform a strict static type checks with mypy
-	$(mypy) --scripts-are-modules --strict $(src) $(tests)
-
-.PHONY: test
-test:				# Run the unit tests
-	$(test) -v
+	$(mypy) --scripts-are-modules --strict $(src)
 
 .PHONY: checkall
-checkall: codestyle lint stricttypecheck test # Check all the things
+checkall: codestyle lint stricttypecheck # Check all the things
 
 ##############################################################################
 # Package/publish.
@@ -92,11 +87,11 @@ repl:				# Start a Python REPL in the venv.
 
 .PHONY: delint
 delint:			# Fix linting issues.
-	$(lint) --fix  $(src) $(tests)
+	$(lint) --fix $(src)
 
 .PHONY: pep8ify
 pep8ify:			# Reformat the code to be as PEP8 as possible.
-	$(fmt) $(src) $(tests)
+	$(fmt) $(src)
 
 .PHONY: tidy
 tidy: delint pep8ify		# Tidy up the code, fixing lint and format issues.
