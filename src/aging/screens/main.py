@@ -73,26 +73,11 @@ class Main(EnhancedScreen[None]):
             hatch: right $surface;
             .panel {
                 border-left: solid $panel;
+                background: $surface;
                 &:focus, &:focus-within {
                     border-left: solid $border;
+                    background: $panel 80%;
                 }
-            }
-        }
-
-        .panel {
-            background: $surface;
-            &:focus-within {
-                background: $panel 80%;
-            }
-            * {
-                scrollbar-background: $surface;
-                scrollbar-background-hover: $surface;
-                scrollbar-background-active: $surface;
-            }
-            &:focus-within * {
-                scrollbar-background: $panel;
-                scrollbar-background-hover: $panel;
-                scrollbar-background-active: $panel;
             }
         }
 
