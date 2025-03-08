@@ -11,6 +11,10 @@ from textual.containers import VerticalGroup
 from textual.reactive import var
 
 ##############################################################################
+# Typing extension imports.
+from typing_extensions import Self
+
+##############################################################################
 # Local imports.
 from .entry_content import EntryContent
 
@@ -48,6 +52,10 @@ class EntryViewer(VerticalGroup):
             line: The line to jump to.
         """
         self.query_one(EntryContent).goto_line(line)
+
+    def focus(self, scroll_visible: bool = True) -> Self:
+        self.query_one(EntryContent).focus(scroll_visible)
+        return self
 
 
 ### widget.py ends here

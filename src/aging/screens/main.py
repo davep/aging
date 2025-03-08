@@ -323,6 +323,7 @@ class Main(EnhancedScreen[None]):
             self.current_entry = self.current_guide.goto(message.location).load()
             if message.initial_line is not None:
                 self.query_one(EntryViewer).goto_line(message.initial_line)
+            self.query_one(EntryViewer).focus()
 
     @on(ToggleGuides)
     def action_toggle_guides_command(self) -> None:
