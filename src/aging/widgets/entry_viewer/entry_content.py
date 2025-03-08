@@ -18,7 +18,7 @@ from rich.text import Text
 # Textual imports.
 from textual import on
 from textual.reactive import var
-from textual.widgets.option_list import Option
+from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
@@ -132,6 +132,17 @@ class EntryContent(EnhancedOptionList):
         assert isinstance(message.option, JumpLine)
         if message.option.link.has_offset:
             self.post_message(OpenEntry(message.option.link.offset))
+
+    def goto_line(self, line: int) -> None:
+        """Move the highlight to the given line in the entry.
+
+        Args:
+            line: The line to jump to.
+        """
+        try:
+            self.highlighted = line
+        except OptionDoesNotExist:
+            pass
 
 
 ### entry_content.py ends here

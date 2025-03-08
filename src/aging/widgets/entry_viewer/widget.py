@@ -41,5 +41,13 @@ class EntryViewer(VerticalGroup):
         """Compose the content of the widget."""
         yield EntryContent().data_bind(EntryViewer.entry)
 
+    def goto_line(self, line: int) -> None:
+        """Move the highlight to the given line in the entry.
+
+        Args:
+            line: The line to jump to.
+        """
+        self.query_one(EntryContent).goto_line(line)
+
 
 ### widget.py ends here

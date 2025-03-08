@@ -321,6 +321,8 @@ class Main(EnhancedScreen[None]):
         """
         if self.current_guide is not None:
             self.current_entry = self.current_guide.goto(message.location).load()
+            if message.initial_line is not None:
+                self.query_one(EntryViewer).goto_line(message.initial_line)
 
     @on(ToggleGuides)
     def action_toggle_guides_command(self) -> None:
@@ -397,7 +399,14 @@ class Main(EnhancedScreen[None]):
     def action_go_to_parent_command(self) -> None:
         """Navigate to the parent entry, if there s one."""
         if self.current_entry is not None and self.current_entry.parent:
-            self.post_message(OpenEntry(self.current_entry.parent.offset))
+            self.post_message(
+                OpenEntry(
+                    self.current_entry.parent.offset,
+                    self.current_entry.parent.line
+                    if self.current_entry.parent.has_line
+                    else None,
+                )
+            )
 
     @on(Escape)
     def action_escape_command(self) -> None:
@@ -420,7 +429,7 @@ class Main(EnhancedScreen[None]):
             if self.current_entry.parent:
                 # There's an entry and a parent, so that means back up to
                 # the parent.
-                self.post_message(OpenEntry(self.current_entry.parent.offset))
+                self.post_message(GoToParent())
             else:
                 # There's an entry without a parent, which implies it's the
                 # top-level, so we bounce out the menu because the user

@@ -30,5 +30,8 @@ class OpenEntry(Message):
     location: int
     """The location of the entry to open."""
 
+    initial_line: int | None = None
+    """The optional line to highlight once the entry is opened."""
+
 
 ### main.py ends here
