@@ -40,8 +40,13 @@ class TextualRichText(RichText):
     This version tweaks how text is handled to make things work better.
     """
 
-    def text(self, text: str) -> None:
-        super().text(make_dos_like(text).replace("\\", "\\\\"))
+    def char(self, char: int) -> None:
+        """Handle an individual character value.
+
+        Args:
+            char: The character value to handle.
+        """
+        self.text(chr(char).replace("\\", "\\\\"))
 
 
 ##############################################################################
