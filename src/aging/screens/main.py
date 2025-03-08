@@ -98,6 +98,7 @@ class Main(EnhancedScreen[None]):
 
         GuideDirectory {
             display: none;
+            min-width: 20%;
         }
         &.guides GuideDirectory {
             display: block;
