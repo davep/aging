@@ -39,6 +39,8 @@ from ..commands import (
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
+    GoToNextEntry,
+    GoToPreviousEntry,
     ToggleGuides,
 )
 from ..data import (
@@ -114,6 +116,8 @@ class Main(EnhancedScreen[None]):
         Help,
         ToggleGuides,
         ChangeTheme,
+        GoToPreviousEntry,
+        GoToNextEntry,
         Quit,
         # The following don't need to be in a specific order.
         AddGuidesToDirectory,
@@ -249,6 +253,16 @@ class Main(EnhancedScreen[None]):
             # but okay let's be defensive... (when I can come up with a nice
             # little MRE I'll report it).
             return True
+        if action == GoToNextEntry.action_name():
+            return (
+                self.current_entry is not None and self.current_entry.has_next or None
+            )
+        if action == GoToPreviousEntry.action_name():
+            return (
+                self.current_entry is not None
+                and self.current_entry.has_previous
+                or None
+            )
         if action in (
             command.action_name()
             for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
@@ -364,6 +378,18 @@ class Main(EnhancedScreen[None]):
                     "\n".join(make_dos_like(line) for line in self.current_entry.lines)
                 )
             )
+
+    @on(GoToNextEntry)
+    def action_go_to_next_entry_command(self) -> None:
+        """Navigate to the next entry if there is one."""
+        if self.current_entry is not None and self.current_entry.has_next:
+            self.post_message(OpenEntry(self.current_entry.next))
+
+    @on(GoToPreviousEntry)
+    def action_go_to_previous_entry_command(self) -> None:
+        """Navigate to the previous entry if there is one."""
+        if self.current_entry is not None and self.current_entry.has_previous:
+            self.post_message(OpenEntry(self.current_entry.previous))
 
 
 ### main.py ends here
