@@ -32,4 +32,12 @@ class GoToParent(Command):
     FOOTER_TEXT = "Up"
 
 
+##############################################################################
+class SeeAlso(Command):
+    """Jump to a guide entry related to this one"""
+
+    BINDING_KEY = "a"
+    SHOW_IN_FOOTER = True
+
+
 ### guide_navigation.py ends here

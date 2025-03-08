@@ -3,7 +3,7 @@
 ##############################################################################
 # Local imports.
 from .guide_management import AddGuidesToDirectory
-from .guide_navigation import GoToNextEntry, GoToParent, GoToPreviousEntry
+from .guide_navigation import GoToNextEntry, GoToParent, GoToPreviousEntry, SeeAlso
 from .main import (
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
@@ -24,6 +24,7 @@ __all__ = [
     "GoToParent",
     "GoToPreviousEntry",
     "ToggleGuides",
+    "SeeAlso",
 ]
 
 

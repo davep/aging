@@ -6,7 +6,7 @@ from pathlib import Path
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, NortonGuide, PlainText, make_dos_like
+from ngdb import Entry, Long, NortonGuide, PlainText, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
@@ -43,6 +43,7 @@ from ..commands import (
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
+    SeeAlso,
     ToggleGuides,
 )
 from ..data import (
@@ -56,6 +57,7 @@ from ..data import (
 from ..messages import CopyToClipboard, OpenEntry, OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
+from .see_also import SeeAlsoMenu
 
 
 ##############################################################################
@@ -104,6 +106,7 @@ class Main(EnhancedScreen[None]):
         Help,
         ToggleGuides,
         ChangeTheme,
+        SeeAlso,
         GoToPreviousEntry,
         GoToParent,
         GoToNextEntry,
@@ -260,6 +263,10 @@ class Main(EnhancedScreen[None]):
                 and bool(self.current_entry.parent)
                 or None
             )
+        if action == SeeAlso.action_name():
+            if isinstance(self.current_entry, Long):
+                return self.current_entry.has_see_also or None
+            return False
         if action in (
             command.action_name()
             for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
@@ -440,6 +447,16 @@ class Main(EnhancedScreen[None]):
                 # top-level, so we bounce out the menu because the user
                 # likely wants to navigate to another menu option.
                 self.set_focus(self.query_one(GuideMenu))
+
+    @on(SeeAlso)
+    @work
+    async def action_see_also_command(self) -> None:
+        """Show a menu of see-also entries."""
+        if isinstance(self.current_entry, Long):
+            if (
+                also := await self.app.push_screen_wait(SeeAlsoMenu(self.current_entry))
+            ) is not None:
+                self.post_message(OpenEntry(also))
 
 
 ### main.py ends here

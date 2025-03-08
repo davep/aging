@@ -21,6 +21,7 @@ from ..commands import (
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
+    SeeAlso,
     ToggleGuides,
 )
 
@@ -46,6 +47,7 @@ class MainCommands(CommandsProvider):
         yield from self.maybe(GoToPreviousEntry)
         yield Help()
         yield Quit()
+        yield from self.maybe(SeeAlso)
         yield ToggleGuides()
 
 
