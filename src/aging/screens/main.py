@@ -337,6 +337,11 @@ class Main(EnhancedScreen[None]):
     def action_toggle_guides_command(self) -> None:
         """Toggle the display of the guides panel."""
         self.guides_visible = not self.guides_visible
+        if self.guides_visible:
+            # If the directory has been made visible it's almost always
+            # going to be because the user wants to interact with it; so
+            # send focus there.
+            self.set_focus(self.query_one(GuideDirectory))
 
     @on(ChangeGuidesSide)
     def action_change_guides_side_command(self) -> None:
