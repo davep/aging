@@ -59,7 +59,10 @@ class PlainLine(Option):
         Args:
             line: The line to display.
         """
-        super().__init__(Text.from_markup(str(TextualRichText(line))))
+        super().__init__(
+            prompt := Text.from_markup(str(TextualRichText(line)), overflow="crop")
+        )
+        prompt.no_wrap = True
 
 
 ##############################################################################
@@ -74,7 +77,10 @@ class JumpLine(Option):
         """
         self._line = line
         """The link to another location in the guide."""
-        super().__init__(Text.from_markup(str(TextualRichText(line.text))))
+        super().__init__(
+            prompt := Text.from_markup(str(TextualRichText(line.text)), overflow="crop")
+        )
+        prompt.no_wrap = True
 
     @property
     def link(self) -> Link:
