@@ -39,6 +39,7 @@ from ..commands import (
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
+    Escape,
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
@@ -112,6 +113,7 @@ class Main(EnhancedScreen[None]):
         ChangeGuidesSide,
         CopyEntryToClipboard,
         CopyEntrySourceToClipboard,
+        Escape,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -396,6 +398,34 @@ class Main(EnhancedScreen[None]):
         """Navigate to the parent entry, if there s one."""
         if self.current_entry is not None and self.current_entry.parent:
             self.post_message(OpenEntry(self.current_entry.parent.offset))
+
+    @on(Escape)
+    def action_escape_command(self) -> None:
+        """Handle the user bouncing on the escape key."""
+        if self.focused is None:
+            return
+        if self.focused == self.query_one(GuideDirectory):
+            # Escape in directory is always quit the app.
+            self.app.exit()
+        elif self.focused == self.query_one(GuideMenu):
+            if self.guides_visible:
+                # Escape in the menu, but the guides are visible, means
+                # bounce out to the guides.
+                self.set_focus(self.query_one(GuideDirectory))
+            else:
+                # The guides aren't visible, so escape in the menu is leave
+                # the app.
+                self.app.exit()
+        elif self.current_entry is not None:
+            if self.current_entry.parent:
+                # There's an entry and a parent, so that means back up to
+                # the parent.
+                self.post_message(OpenEntry(self.current_entry.parent.offset))
+            else:
+                # There's an entry without a parent, which implies it's the
+                # top-level, so we bounce out the menu because the user
+                # likely wants to navigate to another menu option.
+                self.set_focus(self.query_one(GuideMenu))
 
 
 ### main.py ends here

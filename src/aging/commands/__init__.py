@@ -8,6 +8,7 @@ from .main import (
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
+    Escape,
     ToggleGuides,
 )
 
@@ -18,6 +19,7 @@ __all__ = [
     "CopyEntryToClipboard",
     "CopyEntrySourceToClipboard",
     "ChangeGuidesSide",
+    "Escape",
     "GoToNextEntry",
     "GoToParent",
     "GoToPreviousEntry",

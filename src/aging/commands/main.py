@@ -35,4 +35,11 @@ class CopyEntrySourceToClipboard(Command):
     BINDING_KEY = "shift+f5"
 
 
+##############################################################################
+class Escape(Command):
+    """Back out of the application, depending on location and context"""
+
+    BINDING_KEY = "escape"
+
+
 ### main.py ends here
