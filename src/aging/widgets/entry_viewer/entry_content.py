@@ -6,7 +6,7 @@ from typing import Iterable
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Long, Short, make_dos_like
+from ngdb import Entry, Long, Short
 from ngdb.link import Link
 from ngdb.parser import RichText
 
