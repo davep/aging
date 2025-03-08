@@ -23,8 +23,28 @@ class AgiNG(EnhancedApp[None]):
     """The main application class."""
 
     HELP_TITLE = f"AgiNG {__version__}"
-    HELP_ABOUT = "There will be more here."
-    HELP_LICENSE = "License information will go here."
+    HELP_ABOUT = """
+    `AgiNG` is a terminal-based Norton Guide reader; it was created
+    by and is maintained by [Dave Pearson](https://www.davep.org/); it is
+    Free Software and can be [found on
+    GitHub](https://github.com/davep/aging).
+    """
+    HELP_LICENSE = """
+    AgiNG - A Norton Guide reader for the terminal.  \n    Copyright (C) 2025 Dave Pearson
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation, either version 3 of the License, or (at your option)
+    any later version.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+
+    You should have received a copy of the GNU General Public License along with
+    this program. If not, see <https://www.gnu.org/licenses/>.
+    """
 
     COMMANDS = set()
 
