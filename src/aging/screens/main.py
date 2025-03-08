@@ -201,6 +201,8 @@ class Main(EnhancedScreen[None]):
             self.post_message(
                 OpenGuide(Path(config.current_guide), config.current_entry)
             )
+        if not self.guides_visible:
+            self.set_focus(self.query_one(GuideMenu))
 
     def _new_guides(self, guides: Guides) -> None:
         """Add a list of new guides to the guide directory.
