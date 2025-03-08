@@ -18,6 +18,7 @@ from ..commands import (
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
     GoToNextEntry,
+    GoToParent,
     GoToPreviousEntry,
     ToggleGuides,
 )
@@ -39,6 +40,7 @@ class MainCommands(CommandsProvider):
         yield from self.maybe(CopyEntryToClipboard)
         yield from self.maybe(CopyEntrySourceToClipboard)
         yield from self.maybe(GoToNextEntry)
+        yield from self.maybe(GoToParent)
         yield from self.maybe(GoToPreviousEntry)
         yield Help()
         yield Quit()

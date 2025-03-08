@@ -40,6 +40,7 @@ from ..commands import (
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
     GoToNextEntry,
+    GoToParent,
     GoToPreviousEntry,
     ToggleGuides,
 )
@@ -117,6 +118,7 @@ class Main(EnhancedScreen[None]):
         ToggleGuides,
         ChangeTheme,
         GoToPreviousEntry,
+        GoToParent,
         GoToNextEntry,
         Quit,
         # The following don't need to be in a specific order.
@@ -263,6 +265,12 @@ class Main(EnhancedScreen[None]):
                 and self.current_entry.has_previous
                 or None
             )
+        if action == GoToParent.action_name():
+            return (
+                self.current_entry is not None
+                and bool(self.current_entry.parent)
+                or None
+            )
         if action in (
             command.action_name()
             for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
@@ -390,6 +398,12 @@ class Main(EnhancedScreen[None]):
         """Navigate to the previous entry if there is one."""
         if self.current_entry is not None and self.current_entry.has_previous:
             self.post_message(OpenEntry(self.current_entry.previous))
+
+    @on(GoToParent)
+    def action_go_to_parent_command(self) -> None:
+        """Navigate to the parent entry, if there s one."""
+        if self.current_entry is not None and self.current_entry.parent:
+            self.post_message(OpenEntry(self.current_entry.parent.offset))
 
 
 ### main.py ends here
