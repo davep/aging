@@ -312,6 +312,10 @@ class Main(EnhancedScreen[None]):
         # Looks good.
         self.current_guide = new_guide
 
+        # Having opening the guide, the user probably wants to be in the
+        # menu.
+        self.query_one(GuideMenu).focus()
+
     @on(OpenEntry)
     def _open_entry(self, message: OpenEntry) -> None:
         """Handle a request to open an entry.
