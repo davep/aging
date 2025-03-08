@@ -42,8 +42,7 @@ class GuideDirectory(EnhancedOptionList):
 
     DEFAULT_CSS = """
     GuideDirectory {
-        width: 27%;
-        min-width: 30;
+        width: auto;
         dock: left;
         background: transparent;
         height: 1fr;
