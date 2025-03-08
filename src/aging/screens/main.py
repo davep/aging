@@ -359,7 +359,11 @@ class Main(EnhancedScreen[None]):
     def action_copy_entry_source_to_clipboard_command(self) -> None:
         """Copy the source of the current entry to the clipboard."""
         if self.current_entry is not None:
-            self.post_message(CopyToClipboard(make_dos_like(str(self.current_entry))))
+            self.post_message(
+                CopyToClipboard(
+                    "\n".join(make_dos_like(line) for line in self.current_entry.lines)
+                )
+            )
 
 
 ### main.py ends here
