@@ -2,12 +2,12 @@
 
 ##############################################################################
 # Python imports.
-from typing import Iterable
+from typing import Final, Iterable
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Link, Long, Short
-from ngdb.parser import RichText
+from ngdb import Entry, Link, Long, MarkupText, Short, make_dos_like
+from rich.markup import escape
 
 ##############################################################################
 # Rich imports.
@@ -29,15 +29,8 @@ from ...messages import OpenEntry
 
 
 ##############################################################################
-class TextualRichText(RichText):
-    """A Rich parser that works better in Textual.
-
-    I've run into an issue, and this might be a Textual <2.0 vs >=2.0 thing
-    too, I don't know, where the output of the Rich parser works fine in the
-    console, with Rich, but not great in Textual.
-
-    This version tweaks how text is handled to make things work better.
-    """
+class TextualText(MarkupText):
+    """Norton Guide source parser for Textual-based markup."""
 
     def char(self, char: int) -> None:
         """Handle an individual character value.
@@ -45,7 +38,108 @@ class TextualRichText(RichText):
         Args:
             char: The character value to handle.
         """
-        self.text(chr(char).replace("\\", "\\\\"))
+        self.text(chr(char))
+
+    def text(self, text: str) -> None:
+        """Handle some text.
+
+        Args:
+            text: The text to handle.
+        """
+        super().text(escape(make_dos_like(text)))
+
+    def open_markup(self, cls: str) -> str:
+        """Open a section of markup.
+
+        Args:
+            cls: The class of markup to open.
+
+        Returns:
+            The opening markup.
+        """
+        return f"[{cls}]"
+
+    def close_markup(self, cls: str) -> str:
+        """Close a section of markup.
+
+        Args:
+            cls: The class of markup to close.
+
+        Returns:
+            The closing markup.
+        """
+        return "[/]"
+
+    COLOUR_MAP: Final[dict[int, str]] = {
+        0: "000000",
+        1: "0000AA",
+        2: "00AA00",
+        3: "00AAAA",
+        4: "AA0000",
+        5: "AA00AA",
+        6: "AA5500",
+        7: "AAAAAA",
+        8: "555555",
+        9: "5555FF",
+        10: "55FF55",
+        11: "55FFFF",
+        12: "FF5555",
+        13: "FF55FF",
+        14: "FFFF55",
+        15: "FFFFFF",
+    }
+    """DOS to Rich colour mapping. This is just the exceptions."""
+
+    @classmethod
+    def map_colour(cls, colour: int) -> str:
+        """Map a DOS colour into a similar colour from Rich.
+
+        Args:
+            colour: The DOS colour to map from.
+
+        Returns:
+            The mapped colour.
+        """
+        return f"#{cls.COLOUR_MAP[colour]}"
+
+    def colour(self, colour: int) -> None:
+        """Handle a request for a colour attribute.
+
+        Args:
+            colour: The colour attribute to handle.
+        """
+        self.begin_markup(
+            f"{self.map_colour(colour & 0xF)} on {self.map_colour(colour >> 4 & 0xF)}"
+        )
+
+    def bold(self) -> None:
+        """Start a bold section of text."""
+        self.begin_markup("bold")
+
+    def unbold(self) -> None:
+        """End a bold section of text."""
+        self.end_markup()
+
+    def reverse(self) -> None:
+        """Start a reversed section of text."""
+        self.begin_markup("reverse")
+
+    def unreverse(self) -> None:
+        """End a reversed section of text."""
+        self.end_markup()
+
+    def underline(self) -> None:
+        """Start an underlined section of text."""
+        self.begin_markup("underline")
+
+    def ununderline(self) -> None:
+        "End an underlined section of text."
+        self.end_markup()
+
+    @property
+    def as_rich_text(self) -> Text:
+        """The text marked up as a [Rich text object][rich.Text]."""
+        return Text.from_markup(str(self))
 
 
 ##############################################################################
@@ -58,7 +152,7 @@ class PlainLine(Option):
         Args:
             line: The line to display.
         """
-        super().__init__(prompt := Text.from_markup(str(TextualRichText(line))))
+        super().__init__(prompt := TextualText(line).as_rich_text)
         prompt.no_wrap = True
 
 
@@ -74,7 +168,7 @@ class JumpLine(Option):
         """
         self._line = line
         """The link to another location in the guide."""
-        super().__init__(prompt := Text.from_markup(str(TextualRichText(line.text))))
+        super().__init__(prompt := TextualText(line.text).as_rich_text)
         prompt.no_wrap = True
 
     @property
