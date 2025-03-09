@@ -88,7 +88,7 @@ class TextualText(MarkupText):
         14: "FFFF55",
         15: "FFFFFF",
     }
-    """DOS to Rich colour mapping. This is just the exceptions."""
+    """DOS colour map."""
 
     @classmethod
     def map_colour(cls, colour: int) -> str:
