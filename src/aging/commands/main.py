@@ -42,4 +42,11 @@ class Escape(Command):
     BINDING_KEY = "escape"
 
 
+##############################################################################
+class JumpToMenu(Command):
+    """Jump into the guide's menu"""
+
+    BINDING_KEY = "m"
+
+
 ### main.py ends here

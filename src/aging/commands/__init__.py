@@ -9,6 +9,7 @@ from .main import (
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
     Escape,
+    JumpToMenu,
     ToggleGuides,
 )
 
@@ -16,15 +17,16 @@ from .main import (
 # Exports.
 __all__ = [
     "AddGuidesToDirectory",
-    "CopyEntryToClipboard",
-    "CopyEntrySourceToClipboard",
     "ChangeGuidesSide",
+    "CopyEntrySourceToClipboard",
+    "CopyEntryToClipboard",
     "Escape",
     "GoToNextEntry",
     "GoToParent",
     "GoToPreviousEntry",
-    "ToggleGuides",
+    "JumpToMenu",
     "SeeAlso",
+    "ToggleGuides",
 ]
 
 

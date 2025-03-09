@@ -43,6 +43,7 @@ from ..commands import (
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
+    JumpToMenu,
     SeeAlso,
     ToggleGuides,
 )
@@ -116,6 +117,7 @@ class Main(EnhancedScreen[None]):
         CopyEntryToClipboard,
         CopyEntrySourceToClipboard,
         Escape,
+        JumpToMenu,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -455,6 +457,11 @@ class Main(EnhancedScreen[None]):
     def action_see_also_command(self) -> None:
         """Show a menu of see-also entries."""
         self.query_one(EntryViewer).see_also()
+
+    @on(JumpToMenu)
+    def action_jump_to_menu_command(self) -> None:
+        """Jump to the menu."""
+        self.query_one(GuideMenu).focus()
 
 
 ### main.py ends here
