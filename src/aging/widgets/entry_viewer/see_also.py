@@ -45,6 +45,14 @@ class SeeAlsoOption(Label, can_focus=True):
 
     BINDINGS = [("enter", "jump")]
 
+    HELP = """
+    ## See also option
+
+    This is a related entry to the entry you are currently viewing. Either
+    press <kbd>Enter</kbd> or click on the option with the mouse to jump to
+    it.
+    """
+
     def __init__(self, see_also: Link) -> None:
         """Initialise the object.
 
@@ -79,6 +87,13 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
     """
 
     BINDINGS = [("up, left", "previous"), ("down, right", "next")]
+
+    HELP = """
+    ## See also items
+
+    This is the collection of related entries for the currently-selected
+    Norton Guide entry.
+    """
 
     entry: var[Entry | None] = var(None)
     """The entry being viewed, or [`None`][None] if no entry."""

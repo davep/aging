@@ -58,6 +58,13 @@ class GuideDirectory(EnhancedOptionList):
     }
     """
 
+    HELP = """
+    ## Guide directory
+
+    This is the directory of all the Norton Guide files that have been added
+    to the application.
+    """
+
     dock_right: var[bool] = var(False)
     """Should the directory dock to the right?"""
 

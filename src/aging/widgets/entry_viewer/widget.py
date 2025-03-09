@@ -43,6 +43,13 @@ class EntryViewer(VerticalGroup):
     }
     """
 
+    HELP = """
+    ## Guide entry panel
+
+    This panel contains the content of the currently-selected Norton Guide
+    entry.
+    """
+
     entry: var[Entry | None] = var(None)
     """The entry being viewed, or [`None`][None] if no entry."""
 

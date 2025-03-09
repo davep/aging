@@ -100,6 +100,12 @@ class EntryContent(EnhancedOptionList):
     }
     """
 
+    HELP = """
+    ## Norton Guide entry content
+
+    This is the content of the currently-selected entry in the Norton Guide.
+    """
+
     entry: var[Entry | None] = var(None)
     """The [entry][ngdb.Entry] being viewed, or [`None`][None] if no entry."""
 
