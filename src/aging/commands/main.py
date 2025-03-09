@@ -9,7 +9,7 @@ from textual_enhanced.commands import Command
 class ToggleGuides(Command):
     """Toggle the display of the guides directory panel"""
 
-    BINDING_KEY = "f2"
+    BINDING_KEY = "f2, g"
     SHOW_IN_FOOTER = True
     FOOTER_TEXT = "Guides"
 
@@ -25,14 +25,14 @@ class ChangeGuidesSide(Command):
 class CopyEntryToClipboard(Command):
     """Copy the text of the current entry to the clipboard"""
 
-    BINDING_KEY = "f5"
+    BINDING_KEY = "c"
 
 
 ##############################################################################
 class CopyEntrySourceToClipboard(Command):
     """Copy the source of the current entry to the clipboard"""
 
-    BINDING_KEY = "shift+f5"
+    BINDING_KEY = "C"
 
 
 ##############################################################################
