@@ -3,10 +3,11 @@
 ##############################################################################
 # Python imports.
 from pathlib import Path
+from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Long, NortonGuide, PlainText, make_dos_like
+from ngdb import Entry, Long, NGDBError, NortonGuide, PlainText, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
@@ -151,18 +152,61 @@ class Main(EnhancedScreen[None]):
             yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
         yield Footer()
 
+    @property
+    def entry_path(self) -> Iterator[str]:
+        """Generate the path for the current entry.
+
+        Yields:
+            The main path towards the current entry.
+        """
+        if self.current_guide is None:
+            return
+        yield self.current_guide.path.name
+        yield make_dos_like(self.current_guide.title)
+        if self.current_entry is not None:
+            if self.current_entry.parent.has_menu:
+                yield make_dos_like(
+                    self.current_guide.menus[self.current_entry.parent.menu].title
+                )
+            if self.current_entry.parent.has_prompt:
+                yield make_dos_like(
+                    self.current_guide.menus[self.current_entry.parent.menu].prompts[
+                        self.current_entry.parent.prompt
+                    ]
+                )
+
+    def _refresh_sub_title(self) -> None:
+        """Refresh the subtitle of the window."""
+        self.sub_title = " » ".join(self.entry_path)
+
     def _watch_current_guide(self) -> None:
         """React to the current guide being changed."""
         with update_configuration() as config:
             config.current_guide = (
                 None if self.current_guide is None else str(self.current_guide.path)
             )
-        if self.current_guide is None:
-            self.sub_title = ""
-            self.current_entry = None
-        else:
-            self.sub_title = f"{self.current_guide.path.name} » {make_dos_like(self.current_guide.title)}"
-            self.current_entry = self.current_guide.load()
+        # The guide has changed, so let's nuke whatever entry we were
+        # viewing.
+        self.current_entry = None
+        if self.current_guide is not None:
+            # We loaded a guide, so let's try and load and display the entry
+            # at the current location -- we might have been set up elsewhere
+            # to load a specific entry.
+            try:
+                self.current_entry = self.current_guide.load()
+            except NGDBError:
+                # There's no reason why the above load should have failed;
+                # but if we have failed it's possibly because we were trying
+                # to load up an entry we were last viewing before, and
+                # something about the guide has changed, so as a last resort
+                # let's try and go with the first entry.
+                try:
+                    self.current_entry = self.current_guide.goto_first().load()
+                except NGDBError as error:
+                    self.notify(
+                        str(error), title="Failed to load an entry", severity="error"
+                    )
+        self._refresh_sub_title()
 
     def _watch_guides_visible(self) -> None:
         """React to the guides directory viability flag being changed."""
@@ -181,6 +225,7 @@ class Main(EnhancedScreen[None]):
             config.current_entry = (
                 None if self.current_entry is None else self.current_entry.offset
             )
+        self._refresh_sub_title()
         self.refresh_bindings()
 
     def on_mount(self) -> None:
