@@ -127,7 +127,7 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
         if self.screen.focused is None:
             return
         if "--first" in self.screen.focused.classes:
-            self.screen.set_focus(self.query_one(".--last"))
+            self.query_one(".--last").focus()
         else:
             self.screen.focus_previous()
 
@@ -136,7 +136,7 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
         if self.screen.focused is None:
             return
         if "--last" in self.screen.focused.classes:
-            self.screen.set_focus(self.query_one(".--first"))
+            self.query_one(".--first").focus()
         else:
             self.screen.focus_next()
 
