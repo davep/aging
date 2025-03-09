@@ -57,7 +57,6 @@ from ..data import (
 from ..messages import CopyToClipboard, OpenEntry, OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
-from .see_also import SeeAlsoMenu
 
 
 ##############################################################################
@@ -437,6 +436,10 @@ class Main(EnhancedScreen[None]):
                 # The guides aren't visible, so escape in the menu is leave
                 # the app.
                 self.app.exit()
+        elif self.query_one(EntryViewer).seeing_also:
+            # We're in the viewer, but within the see-also section, so back
+            # up to the main content.
+            self.query_one(EntryViewer).focus()
         elif self.current_entry is not None:
             if self.current_entry.parent:
                 # There's an entry and a parent, so that means back up to
@@ -449,14 +452,9 @@ class Main(EnhancedScreen[None]):
                 self.set_focus(self.query_one(GuideMenu))
 
     @on(SeeAlso)
-    @work
-    async def action_see_also_command(self) -> None:
+    def action_see_also_command(self) -> None:
         """Show a menu of see-also entries."""
-        if isinstance(self.current_entry, Long):
-            if (
-                also := await self.app.push_screen_wait(SeeAlsoMenu(self.current_entry))
-            ) is not None:
-                self.post_message(OpenEntry(also))
+        self.query_one(EntryViewer).see_also()
 
 
 ### main.py ends here

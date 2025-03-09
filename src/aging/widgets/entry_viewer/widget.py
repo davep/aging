@@ -17,6 +17,7 @@ from typing_extensions import Self
 ##############################################################################
 # Local imports.
 from .entry_content import EntryContent
+from .see_also import SeeAlsos
 
 
 ##############################################################################
@@ -31,6 +32,14 @@ class EntryViewer(VerticalGroup):
         &.--no-entry {
             display: none;
         }
+
+        SeeAlsos {
+            border-top: solid $panel;
+        }
+
+        &:focus-within SeeAlsos {
+            border-top: solid $border;
+        }
     }
     """
 
@@ -44,6 +53,7 @@ class EntryViewer(VerticalGroup):
     def compose(self) -> ComposeResult:
         """Compose the content of the widget."""
         yield EntryContent().data_bind(EntryViewer.entry)
+        yield SeeAlsos().data_bind(EntryViewer.entry)
 
     def goto_line(self, line: int) -> None:
         """Move the highlight to the given line in the entry.
@@ -52,6 +62,15 @@ class EntryViewer(VerticalGroup):
             line: The line to jump to.
         """
         self.query_one(EntryContent).goto_line(line)
+
+    def see_also(self) -> None:
+        """Place focus in the see-also area of the widget."""
+        self.query_one(SeeAlsos).focus()
+
+    @property
+    def seeing_also(self) -> bool:
+        """Is focus within the see-also area of the viewer?"""
+        return bool(self.query("SeeAlsos:focus-within"))
 
     def focus(self, scroll_visible: bool = True) -> Self:
         self.query_one(EntryContent).focus(scroll_visible)
