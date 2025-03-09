@@ -90,18 +90,6 @@ class TextualText(MarkupText):
     }
     """DOS colour map."""
 
-    @classmethod
-    def map_colour(cls, colour: int) -> str:
-        """Map a DOS colour into a similar colour from Rich.
-
-        Args:
-            colour: The DOS colour to map from.
-
-        Returns:
-            The mapped colour.
-        """
-        return f"#{cls.COLOUR_MAP[colour]}"
-
     def colour(self, colour: int) -> None:
         """Handle a request for a colour attribute.
 
@@ -109,7 +97,7 @@ class TextualText(MarkupText):
             colour: The colour attribute to handle.
         """
         self.begin_markup(
-            f"{self.map_colour(colour & 0xF)} on {self.map_colour(colour >> 4 & 0xF)}"
+            f"#{self.COLOUR_MAP[colour & 0xF]} on #{self.COLOUR_MAP[colour >> 4 & 0xF]}"
         )
 
     def bold(self) -> None:
