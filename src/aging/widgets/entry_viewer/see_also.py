@@ -43,7 +43,7 @@ class SeeAlsoOption(Label, can_focus=True):
     }
     """
 
-    BINDINGS = [("enter", "jump")]
+    BINDINGS = [("enter, space", "jump")]
 
     HELP = """
     ## See also option
