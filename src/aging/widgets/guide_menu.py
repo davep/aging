@@ -2,8 +2,7 @@
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Menu, NortonGuide
-from ngdb.link import Link
+from ngdb import Entry, Link, Menu, NortonGuide
 
 ##############################################################################
 # Textual imports.

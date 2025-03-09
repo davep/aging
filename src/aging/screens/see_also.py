@@ -2,8 +2,7 @@
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Long
-from ngdb.link import Link
+from ngdb import Link, Long
 
 ##############################################################################
 # Textual imports.
