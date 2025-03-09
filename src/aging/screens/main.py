@@ -159,7 +159,7 @@ class Main(EnhancedScreen[None]):
             self.sub_title = ""
             self.current_entry = None
         else:
-            self.sub_title = make_dos_like(self.current_guide.title)
+            self.sub_title = f"{self.current_guide.path.name} » {make_dos_like(self.current_guide.title)}"
             self.current_entry = self.current_guide.load()
 
     def _watch_guides_visible(self) -> None:
