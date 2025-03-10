@@ -15,7 +15,7 @@ dependencies = [
     "pyperclip>=1.9.0",
 ]
 readme = "README.md"
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 
 [project.scripts]
 aging = "aging.__main__:main"
