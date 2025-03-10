@@ -37,8 +37,6 @@ identify==2.6.9
     # via pre-commit
 idna==3.10
     # via yarl
-iniconfig==2.0.0
-    # via pytest
 jinja2==3.1.6
     # via aiohttp-jinja2
     # via textual-serve
@@ -66,13 +64,9 @@ ngdb==0.8.0
     # via aging
 nodeenv==1.9.1
     # via pre-commit
-packaging==24.2
-    # via pytest
 platformdirs==4.3.6
     # via textual
     # via virtualenv
-pluggy==1.5.0
-    # via pytest
 pre-commit==4.1.0
 propcache==0.3.0
     # via aiohttp
@@ -81,7 +75,6 @@ pygments==2.19.1
     # via rich
 pyperclip==1.9.0
     # via aging
-pytest==8.3.5
 pyyaml==6.0.2
     # via pre-commit
 rich==13.9.4
