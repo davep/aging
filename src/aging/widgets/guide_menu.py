@@ -89,21 +89,26 @@ class GuideMenu(EnhancedOptionList):
     entry: var[Entry | None] = var(None, init=False)
     """The currently-displayed entry."""
 
-    def _highlight_menu_for_current_entry(self) -> None:
-        """Ensure the menu for the current entry is highlighted.."""
+    def _highlight_menu_for_current_entry(self) -> bool:
+        """Ensure the menu for the current entry is highlighted.
+
+        Returns:
+            [`True`][True] if a menu option was highlighted,
+              [`False`][False] if not.
+        """
         if (
             self.entry is None
             or not self.entry.parent.has_menu
             or not self.entry.parent.has_prompt
         ):
-            self.highlighted = 0
-            return
+            return False
         try:
             self.highlighted = self.get_option_index(
                 f"{self.entry.parent.menu}-{self.entry.parent.prompt}"
             )
         except OptionDoesNotExist:
-            self.highlighted = 0
+            return False
+        return True
 
     def _watch_guide(self) -> None:
         """Handle the current guide being changed."""
@@ -119,7 +124,12 @@ class GuideMenu(EnhancedOptionList):
                     )
                     for prompt_id, prompt in enumerate(menu)
                 )
-            self._highlight_menu_for_current_entry()
+            if not self._highlight_menu_for_current_entry():
+                self.highlighted = 0
+
+    def _watch_entry(self) -> None:
+        """Handle the current entry being changed."""
+        self._highlight_menu_for_current_entry()
 
     @on(EnhancedOptionList.OptionSelected)
     def _select_option(self, message: EnhancedOptionList.OptionSelected) -> None:
