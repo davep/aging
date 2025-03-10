@@ -26,6 +26,10 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
+# Typing extension imports.
+from typing_extensions import Self
+
+##############################################################################
 # Local imports.
 from ...messages import OpenEntry
 
@@ -205,7 +209,17 @@ class EntryContent(EnhancedOptionList):
             elif isinstance(self.entry, Long):
                 self.add_options(PlainLine(line) for line in self.entry)
             if self.option_count:
-                self.highlighted = 0
+                # NOTE: This should simply be:
+                #
+                # self.goto_line(0)
+                #
+                # However https://github.com/Textualize/textual/issues/5632
+                # means the scrollbar goes FUBAR, hence the rather bonkers
+                # "go to the end, then go back to the start".
+                #
+                # This workaround will be removed when textual#5632 is no
+                # longer a problem.
+                self.goto_line(len(self.entry.lines) - 1).goto_line(0)
 
     @on(EnhancedOptionList.OptionSelected)
     def _line_selected(self, message: EnhancedOptionList.OptionSelected) -> None:
@@ -221,16 +235,20 @@ class EntryContent(EnhancedOptionList):
         if message.option.link.has_offset:
             self.post_message(OpenEntry(message.option.link.offset))
 
-    def goto_line(self, line: int) -> None:
+    def goto_line(self, line: int) -> Self:
         """Move the highlight to the given line in the entry.
 
         Args:
             line: The line to jump to.
+
+        Returns:
+            Self.
         """
         try:
             self.highlighted = line
         except OptionDoesNotExist:
             pass
+        return self
 
     def render_line(self, y: int) -> Strip:
         """Render a line in the display.
