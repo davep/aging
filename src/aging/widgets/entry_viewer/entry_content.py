@@ -256,6 +256,9 @@ class EntryContent(EnhancedOptionList):
         Args:
             y: The line to render.
 
+        Returns:
+            The strip that renders the requested line.
+
         This method simply overrides the version in
         [`OptionList`][textual.widgets.OptionList] in the case where we're
         rendering the highlighted line. Textual's approach when there are
