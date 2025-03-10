@@ -49,4 +49,13 @@ class JumpToMenu(Command):
     BINDING_KEY = "m"
 
 
+##############################################################################
+class AboutTheGuide(Command):
+    """View the about information for the current guide"""
+
+    BINDING_KEY = "f3"
+    SHOW_IN_FOOTER = True
+    FOOTER_TEXT = "About"
+
+
 ### main.py ends here

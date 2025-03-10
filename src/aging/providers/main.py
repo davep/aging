@@ -13,6 +13,7 @@ from textual_enhanced.commands import (
 ##############################################################################
 # Local imports.
 from ..commands import (
+    AboutTheGuide,
     AddGuidesToDirectory,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
@@ -37,6 +38,7 @@ class MainCommands(CommandsProvider):
         Yields:
             The commands for the command palette.
         """
+        yield AboutTheGuide()
         yield AddGuidesToDirectory()
         yield ChangeGuidesSide()
         yield ChangeTheme()

@@ -36,6 +36,7 @@ from textual_fspicker import SelectDirectory
 # Local imports.
 from .. import __version__
 from ..commands import (
+    AboutTheGuide,
     AddGuidesToDirectory,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
@@ -59,6 +60,7 @@ from ..data import (
 from ..messages import CopyToClipboard, OpenEntry, OpenGuide
 from ..providers import MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
+from .about import About
 
 
 ##############################################################################
@@ -106,7 +108,7 @@ class Main(EnhancedScreen[None]):
         # for the footer.
         Help,
         ToggleGuides,
-        ChangeTheme,
+        AboutTheGuide,
         SeeAlso,
         GoToPreviousEntry,
         GoToParent,
@@ -115,8 +117,9 @@ class Main(EnhancedScreen[None]):
         # The following don't need to be in a specific order.
         AddGuidesToDirectory,
         ChangeGuidesSide,
-        CopyEntryToClipboard,
+        ChangeTheme,
         CopyEntrySourceToClipboard,
+        CopyEntryToClipboard,
         Escape,
         JumpToMenu,
     )
@@ -486,6 +489,12 @@ class Main(EnhancedScreen[None]):
     def action_jump_to_menu_command(self) -> None:
         """Jump to the menu."""
         self.query_one(GuideMenu).focus()
+
+    @on(AboutTheGuide)
+    def action_about_the_guide_command(self) -> None:
+        """Show details about the guide."""
+        if self.guide is not None:
+            self.app.push_screen(About(self.guide))
 
 
 ### main.py ends here

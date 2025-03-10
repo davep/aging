@@ -5,6 +5,7 @@
 from .guide_management import AddGuidesToDirectory
 from .guide_navigation import GoToNextEntry, GoToParent, GoToPreviousEntry, SeeAlso
 from .main import (
+    AboutTheGuide,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
@@ -16,6 +17,7 @@ from .main import (
 ##############################################################################
 # Exports.
 __all__ = [
+    "AboutTheGuide",
     "AddGuidesToDirectory",
     "ChangeGuidesSide",
     "CopyEntrySourceToClipboard",
