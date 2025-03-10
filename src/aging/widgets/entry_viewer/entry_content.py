@@ -6,7 +6,7 @@ from typing import Final
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Link, Long, MarkupText, Short, make_dos_like
+from ngdb import Link, Long, MarkupText, Short, make_dos_like
 from rich.markup import escape
 
 ##############################################################################
