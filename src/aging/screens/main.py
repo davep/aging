@@ -127,10 +127,10 @@ class Main(EnhancedScreen[None]):
     guides: var[Guides] = var(Guides)
     """The directory of Norton Guides."""
 
-    current_guide: var[NortonGuide | None] = var(None, init=False)
+    guide: var[NortonGuide | None] = var(None, init=False)
     """The currently-opened Norton Guide."""
 
-    current_entry: var[Short | Long | None] = var(None, init=False)
+    entry: var[Short | Long | None] = var(None, init=False)
     """The entry that is being currently viewed."""
 
     guides_visible: var[bool] = var(True)
@@ -144,12 +144,10 @@ class Main(EnhancedScreen[None]):
         yield Header()
         with HorizontalGroup(id="workspace"):
             yield GuideDirectory(classes="panel").data_bind(
-                Main.guides, Main.current_guide, dock_right=Main.guides_on_right
+                Main.guides, Main.guide, dock_right=Main.guides_on_right
             )
-            yield GuideMenu(classes="panel").data_bind(
-                Main.current_entry, guide=Main.current_guide
-            )
-            yield EntryViewer(classes="panel").data_bind(entry=Main.current_entry)
+            yield GuideMenu(classes="panel").data_bind(Main.guide, Main.entry)
+            yield EntryViewer(classes="panel").data_bind(Main.entry)
         yield Footer()
 
     @property
@@ -159,54 +157,23 @@ class Main(EnhancedScreen[None]):
         Yields:
             The main path towards the current entry.
         """
-        if self.current_guide is None:
+        if self.guide is None:
             return
-        yield self.current_guide.path.name
-        yield make_dos_like(self.current_guide.title)
-        if self.current_entry is not None:
-            if self.current_entry.parent.has_menu:
+        yield self.guide.path.name
+        yield make_dos_like(self.guide.title)
+        if self.entry is not None:
+            if self.entry.parent.has_menu:
+                yield make_dos_like(self.guide.menus[self.entry.parent.menu].title)
+            if self.entry.parent.has_prompt:
                 yield make_dos_like(
-                    self.current_guide.menus[self.current_entry.parent.menu].title
-                )
-            if self.current_entry.parent.has_prompt:
-                yield make_dos_like(
-                    self.current_guide.menus[self.current_entry.parent.menu].prompts[
-                        self.current_entry.parent.prompt
+                    self.guide.menus[self.entry.parent.menu].prompts[
+                        self.entry.parent.prompt
                     ]
                 )
 
     def _refresh_sub_title(self) -> None:
         """Refresh the subtitle of the window."""
         self.sub_title = " » ".join(self.entry_path)
-
-    def _watch_current_guide(self) -> None:
-        """React to the current guide being changed."""
-        with update_configuration() as config:
-            config.current_guide = (
-                None if self.current_guide is None else str(self.current_guide.path)
-            )
-        # The guide has changed, so let's nuke whatever entry we were
-        # viewing.
-        self.current_entry = None
-        if self.current_guide is not None:
-            # We loaded a guide, so let's try and load and display the entry
-            # at the current location -- we might have been set up elsewhere
-            # to load a specific entry.
-            try:
-                self.current_entry = self.current_guide.load()
-            except NGDBError:
-                # There's no reason why the above load should have failed;
-                # but if we have failed it's possibly because we were trying
-                # to load up an entry we were last viewing before, and
-                # something about the guide has changed, so as a last resort
-                # let's try and go with the first entry.
-                try:
-                    self.current_entry = self.current_guide.goto_first().load()
-                except NGDBError as error:
-                    self.notify(
-                        str(error), title="Failed to load an entry", severity="error"
-                    )
-        self._refresh_sub_title()
 
     def _watch_guides_visible(self) -> None:
         """React to the guides directory viability flag being changed."""
@@ -219,12 +186,37 @@ class Main(EnhancedScreen[None]):
         with update_configuration() as config:
             config.guides_directory_on_right = self.guides_on_right
 
-    def _watch_current_entry(self) -> None:
+    def _watch_guide(self) -> None:
+        """React to the current guide being changed."""
+        with update_configuration() as config:
+            config.current_guide = None if self.guide is None else str(self.guide.path)
+        # The guide has changed, so let's nuke whatever entry we were
+        # viewing.
+        self.entry = None
+        if self.guide is not None:
+            # We loaded a guide, so let's try and load and display the entry
+            # at the current location -- we might have been set up elsewhere
+            # to load a specific entry.
+            try:
+                self.entry = self.guide.load()
+            except NGDBError:
+                # There's no reason why the above load should have failed;
+                # but if we have failed it's possibly because we were trying
+                # to load up an entry we were last viewing before, and
+                # something about the guide has changed, so as a last resort
+                # let's try and go with the first entry.
+                try:
+                    self.entry = self.guide.goto_first().load()
+                except NGDBError as error:
+                    self.notify(
+                        str(error), title="Failed to load an entry", severity="error"
+                    )
+        self._refresh_sub_title()
+
+    def _watch_entry(self) -> None:
         """React to the current entry being changed."""
         with update_configuration() as config:
-            config.current_entry = (
-                None if self.current_entry is None else self.current_entry.offset
-            )
+            config.current_entry = None if self.entry is None else self.entry.offset
         self._refresh_sub_title()
         self.refresh_bindings()
 
@@ -294,30 +286,20 @@ class Main(EnhancedScreen[None]):
             # little MRE I'll report it).
             return True
         if action == GoToNextEntry.action_name():
-            return (
-                self.current_entry is not None and self.current_entry.has_next or None
-            )
+            return self.entry is not None and self.entry.has_next or None
         if action == GoToPreviousEntry.action_name():
-            return (
-                self.current_entry is not None
-                and self.current_entry.has_previous
-                or None
-            )
+            return self.entry is not None and self.entry.has_previous or None
         if action == GoToParent.action_name():
-            return (
-                self.current_entry is not None
-                and bool(self.current_entry.parent)
-                or None
-            )
+            return self.entry is not None and bool(self.entry.parent) or None
         if action == SeeAlso.action_name():
-            if isinstance(self.current_entry, Long):
-                return self.current_entry.has_see_also or None
+            if isinstance(self.entry, Long):
+                return self.entry.has_see_also or None
             return False
         if action in (
             command.action_name()
             for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
         ):
-            return self.current_entry is not None
+            return self.entry is not None
         return True
 
     @on(AddGuidesToDirectory)
@@ -354,8 +336,8 @@ class Main(EnhancedScreen[None]):
             return
 
         # If there is a guide already open, ensure it gets closed.
-        if self.current_guide is not None:
-            self.current_guide.close()
+        if self.guide is not None:
+            self.guide.close()
 
         # If we're being asked to jump to a specific entry, to start with,
         # make sure we're there...
@@ -363,7 +345,7 @@ class Main(EnhancedScreen[None]):
             new_guide.goto(message.initial_offset)
 
         # Looks good.
-        self.current_guide = new_guide
+        self.guide = new_guide
 
         # Having opening the guide, the user probably wants to be in the
         # menu.
@@ -376,8 +358,8 @@ class Main(EnhancedScreen[None]):
         Args:
             message: The message requesting an entry be opened.
         """
-        if self.current_guide is not None:
-            self.current_entry = self.current_guide.goto(message.location).load()
+        if self.guide is not None:
+            self.entry = self.guide.goto(message.location).load()
             if message.initial_line is not None:
                 self.query_one(EntryViewer).goto_line(message.initial_line)
             self.query_one(EntryViewer).focus()
@@ -421,12 +403,11 @@ class Main(EnhancedScreen[None]):
     @on(CopyEntryToClipboard)
     def action_copy_entry_to_clipboard_command(self) -> None:
         """Copy the text of the current entry to the clipboard."""
-        if self.current_entry is not None:
+        if self.entry is not None:
             self.post_message(
                 CopyToClipboard(
                     "\n".join(
-                        make_dos_like(str(PlainText(line)))
-                        for line in self.current_entry.lines
+                        make_dos_like(str(PlainText(line))) for line in self.entry.lines
                     )
                 )
             )
@@ -434,35 +415,33 @@ class Main(EnhancedScreen[None]):
     @on(CopyEntrySourceToClipboard)
     def action_copy_entry_source_to_clipboard_command(self) -> None:
         """Copy the source of the current entry to the clipboard."""
-        if self.current_entry is not None:
+        if self.entry is not None:
             self.post_message(
                 CopyToClipboard(
-                    "\n".join(make_dos_like(line) for line in self.current_entry.lines)
+                    "\n".join(make_dos_like(line) for line in self.entry.lines)
                 )
             )
 
     @on(GoToNextEntry)
     def action_go_to_next_entry_command(self) -> None:
         """Navigate to the next entry if there is one."""
-        if self.current_entry is not None and self.current_entry.has_next:
-            self.post_message(OpenEntry(self.current_entry.next))
+        if self.entry is not None and self.entry.has_next:
+            self.post_message(OpenEntry(self.entry.next))
 
     @on(GoToPreviousEntry)
     def action_go_to_previous_entry_command(self) -> None:
         """Navigate to the previous entry if there is one."""
-        if self.current_entry is not None and self.current_entry.has_previous:
-            self.post_message(OpenEntry(self.current_entry.previous))
+        if self.entry is not None and self.entry.has_previous:
+            self.post_message(OpenEntry(self.entry.previous))
 
     @on(GoToParent)
     def action_go_to_parent_command(self) -> None:
         """Navigate to the parent entry, if there s one."""
-        if self.current_entry is not None and self.current_entry.parent:
+        if self.entry is not None and self.entry.parent:
             self.post_message(
                 OpenEntry(
-                    self.current_entry.parent.offset,
-                    self.current_entry.parent.line
-                    if self.current_entry.parent.has_line
-                    else None,
+                    self.entry.parent.offset,
+                    self.entry.parent.line if self.entry.parent.has_line else None,
                 )
             )
 
@@ -487,8 +466,8 @@ class Main(EnhancedScreen[None]):
             # We're in the viewer, but within the see-also section, so back
             # up to the main content.
             self.query_one(EntryViewer).focus()
-        elif self.current_entry is not None:
-            if self.current_entry.parent:
+        elif self.entry is not None:
+            if self.entry.parent:
                 # There's an entry and a parent, so that means back up to
                 # the parent.
                 self.post_message(GoToParent())

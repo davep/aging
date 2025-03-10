@@ -71,7 +71,7 @@ class GuideDirectory(EnhancedOptionList):
     guides: var[Guides] = var(Guides)
     """The guides in the directory."""
 
-    current_guide: var[NortonGuide | None] = var(None)
+    guide: var[NortonGuide | None] = var(None)
     """The currently-selected guide.
 
     Note:
@@ -89,12 +89,12 @@ class GuideDirectory(EnhancedOptionList):
         """React to the dock toggle being changed."""
         self.set_class(self.dock_right, "--dock-right")
 
-    def _watch_current_guide(self) -> None:
+    def _watch_guide(self) -> None:
         """React to the current guide being set."""
         try:
             self.highlighted = (
-                self.get_option_index(str(self.current_guide))
-                if self.current_guide is not None
+                self.get_option_index(str(self.guide))
+                if self.guide is not None
                 else None
             )
         except OptionDoesNotExist:

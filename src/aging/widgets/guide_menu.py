@@ -86,21 +86,21 @@ class GuideMenu(EnhancedOptionList):
     guide: var[NortonGuide | None] = var(None)
     """The guide whose menu we're showing."""
 
-    current_entry: var[Entry | None] = var(None, init=False)
+    entry: var[Entry | None] = var(None, init=False)
     """The currently-displayed entry."""
 
     def _highlight_menu_for_current_entry(self) -> None:
         """Ensure the menu for the current entry is highlighted.."""
         if (
-            self.current_entry is None
-            or not self.current_entry.parent.has_menu
-            or not self.current_entry.parent.has_prompt
+            self.entry is None
+            or not self.entry.parent.has_menu
+            or not self.entry.parent.has_prompt
         ):
             self.highlighted = 0
             return
         try:
             self.highlighted = self.get_option_index(
-                f"{self.current_entry.parent.menu}-{self.current_entry.parent.prompt}"
+                f"{self.entry.parent.menu}-{self.entry.parent.prompt}"
             )
         except OptionDoesNotExist:
             self.highlighted = 0
