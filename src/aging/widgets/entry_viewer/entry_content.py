@@ -2,7 +2,7 @@
 
 ##############################################################################
 # Python imports.
-from typing import Final, Iterable
+from typing import Final
 
 ##############################################################################
 # NGDB imports.
@@ -190,14 +190,13 @@ class EntryContent(EnhancedOptionList):
     This is the content of the currently-selected entry in the Norton Guide.
     """
 
-    entry: var[Entry | None] = var(None)
+    entry: var[Short | Long | None] = var(None)
     """The [entry][ngdb.Entry] being viewed, or [`None`][None] if no entry."""
 
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
         self.clear_options()
         if self.entry is not None:
-            assert isinstance(self.entry, Iterable)
             if isinstance(self.entry, Short):
                 self.add_options(
                     JumpLine(line) if line.has_offset else PlainLine(line.text)

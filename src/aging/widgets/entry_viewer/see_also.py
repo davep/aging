@@ -2,7 +2,7 @@
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Link, Long
+from ngdb import Link, Long, Short
 
 ##############################################################################
 # Textual imports.
@@ -95,7 +95,7 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
     Norton Guide entry.
     """
 
-    entry: var[Entry | None] = var(None)
+    entry: var[Short | Long | None] = var(None)
     """The entry being viewed, or [`None`][None] if no entry."""
 
     async def _watch_entry(self) -> None:

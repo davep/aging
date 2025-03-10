@@ -7,7 +7,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Long, NGDBError, NortonGuide, PlainText, make_dos_like
+from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
@@ -130,7 +130,7 @@ class Main(EnhancedScreen[None]):
     current_guide: var[NortonGuide | None] = var(None, init=False)
     """The currently-opened Norton Guide."""
 
-    current_entry: var[Entry | None] = var(None, init=False)
+    current_entry: var[Short | Long | None] = var(None, init=False)
     """The entry that is being currently viewed."""
 
     guides_visible: var[bool] = var(True)

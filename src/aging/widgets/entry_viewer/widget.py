@@ -2,7 +2,7 @@
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry
+from ngdb import Long, Short
 
 ##############################################################################
 # Textual imports.
@@ -50,7 +50,7 @@ class EntryViewer(VerticalGroup):
     entry.
     """
 
-    entry: var[Entry | None] = var(None)
+    entry: var[Short | Long | None] = var(None)
     """The entry being viewed, or [`None`][None] if no entry."""
 
     def _watch_entry(self) -> None:
