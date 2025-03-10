@@ -2,6 +2,7 @@
 
 ##############################################################################
 # Python imports.
+from functools import lru_cache
 from typing import Final
 
 ##############################################################################
@@ -32,6 +33,41 @@ from typing_extensions import Self
 ##############################################################################
 # Local imports.
 from ...messages import OpenEntry
+
+##############################################################################
+COLOUR_MAP: Final[dict[int, str]] = {
+    0: "000000",
+    1: "0000AA",
+    2: "00AA00",
+    3: "00AAAA",
+    4: "AA0000",
+    5: "AA00AA",
+    6: "AA5500",
+    7: "AAAAAA",
+    8: "555555",
+    9: "5555FF",
+    10: "55FF55",
+    11: "55FFFF",
+    12: "FF5555",
+    13: "FF55FF",
+    14: "FFFF55",
+    15: "FFFFFF",
+}
+"""DOS colour map."""
+
+
+##############################################################################
+@lru_cache(maxsize=256)
+def _dos_to_rich(colour: int) -> str:
+    """Convert an MS-DOS colour byte into Rich colour markup.
+
+    Args:
+        colour: The colour byte to convert.
+
+    Returns:
+        The Rich markup to producing that fg/bg colour combination.
+    """
+    return f"#{COLOUR_MAP[colour & 0xF]} on #{COLOUR_MAP[colour >> 4 & 0xF]}"
 
 
 ##############################################################################
@@ -76,35 +112,13 @@ class TextualText(MarkupText):
         """
         return "[/]"
 
-    COLOUR_MAP: Final[dict[int, str]] = {
-        0: "000000",
-        1: "0000AA",
-        2: "00AA00",
-        3: "00AAAA",
-        4: "AA0000",
-        5: "AA00AA",
-        6: "AA5500",
-        7: "AAAAAA",
-        8: "555555",
-        9: "5555FF",
-        10: "55FF55",
-        11: "55FFFF",
-        12: "FF5555",
-        13: "FF55FF",
-        14: "FFFF55",
-        15: "FFFFFF",
-    }
-    """DOS colour map."""
-
     def colour(self, colour: int) -> None:
         """Handle a request for a colour attribute.
 
         Args:
             colour: The colour attribute to handle.
         """
-        self.begin_markup(
-            f"#{self.COLOUR_MAP[colour & 0xF]} on #{self.COLOUR_MAP[colour >> 4 & 0xF]}"
-        )
+        self.begin_markup(_dos_to_rich(colour))
 
     def bold(self) -> None:
         """Start a bold section of text."""
