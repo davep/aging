@@ -11,12 +11,14 @@ from rich.markup import escape
 
 ##############################################################################
 # Rich imports.
+from rich.segment import Segment
 from rich.text import Text
 
 ##############################################################################
 # Textual imports.
 from textual import on
 from textual.reactive import var
+from textual.strip import Strip
 from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
@@ -230,6 +232,37 @@ class EntryContent(EnhancedOptionList):
             self.highlighted = line
         except OptionDoesNotExist:
             pass
+
+    def render_line(self, y: int) -> Strip:
+        """Render a line in the display.
+
+        Args:
+            y: The line to render.
+
+        This method simply overrides the version in
+        [`OptionList`][textual.widgets.OptionList] in the case where we're
+        rendering the highlighted line. Textual's approach when there are
+        colours in the prompt is to let those win over the highlighted
+        component class; for this widget I want the highlight to be plain
+        text, no overriding colours.
+        """
+        strip = super().render_line(y)
+        if self.scroll_offset.y + y == self.highlighted:
+            if highlight := self.get_visual_style("option-list--option-highlighted"):
+                strip = Strip(
+                    [
+                        Segment(
+                            text,
+                            style.without_color + highlight.rich_style
+                            if style is not None
+                            else None,
+                            control,
+                        )
+                        for text, style, control in strip
+                    ]
+                )
+
+        return strip
 
 
 ### entry_content.py ends here
