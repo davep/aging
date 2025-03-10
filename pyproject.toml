@@ -1,7 +1,7 @@
 [project]
 name = "aging"
 version = "0.0.1"
-description = "Coming at some point in the future"
+description = "A Norton Guide reader for the terminal"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
@@ -16,6 +16,53 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
+license = { text = "GNU General Public License v3 or later (GPLv3+)" }
+keywords = [
+    "terminal",
+    "tui",
+    "chui",
+    "documentation",
+    "file-viewer",
+    "file-browser",
+    "norton-guide",
+    "help",
+    "ms-dos",
+    "clipper",
+    "xbase",
+    "dbase",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Other Audience",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://blog.davep.org/aging/"
+Repository = "https://github.com/davep/aging"
+Documentation = "https://blog.davep.org/aging/"
+Source = "https://github.com/davep/aging"
+Issues = "https://github.com/davep/aging/issues"
+Discussions = "https://github.com/davep/aging/discussions"
 
 [project.scripts]
 aging = "aging.__main__:main"
