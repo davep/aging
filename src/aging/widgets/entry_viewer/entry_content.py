@@ -269,18 +269,19 @@ class EntryContent(EnhancedOptionList):
         strip = super().render_line(y)
         if self.scroll_offset.y + y == self.highlighted:
             if highlight := self.get_visual_style("option-list--option-highlighted"):
+                highlight_style = highlight.rich_style
                 strip = Strip(
                     [
                         Segment(
                             text,
-                            style.without_color + highlight.rich_style
+                            style.without_color + highlight_style
                             if style is not None
                             else None,
                             control,
                         )
                         for text, style, control in strip
                     ]
-                )
+                ).simplify()
 
         return strip
 
