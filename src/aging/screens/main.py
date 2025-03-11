@@ -478,29 +478,34 @@ class Main(EnhancedScreen[None]):
         if self.entry is not None:
             self.post_message(CopyToClipboard(self._entry_source, "the entry's source"))
 
+    async def _save_entry(self, content: str, content_type: str) -> None:
+        """Save an entry's content to a file.
+
+        Args:
+            content: The content to save.
+            content_type: A description of the type of content.
+        """
+        if self.entry is None:
+            return
+        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
+            try:
+                text_file.write_text(content, encoding="utf-8")
+            except OSError as error:
+                self.notify(str(error), title="Save error", severity="error")
+                return
+            self.notify(str(text_file), title=f"Entry {content_type} saved")
+
     @on(SaveEntrySource)
     @work
     async def action_save_entry_source_command(self) -> None:
         """Save the current entry's text to a file."""
-        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
-            try:
-                text_file.write_text(self._entry_source, encoding="utf-8")
-            except OSError as error:
-                self.notify(str(error), title="Save error", severity="error")
-                return
-            self.notify(str(text_file), title="Entry source saved")
+        await self._save_entry(self._entry_source, "source")
 
     @on(SaveEntryText)
     @work
     async def action_save_entry_text_command(self) -> None:
         """Save the current entry's text to a file."""
-        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
-            try:
-                text_file.write_text(self._entry_text, encoding="utf-8")
-            except OSError as error:
-                self.notify(str(error), title="Save error", severity="error")
-                return
-            self.notify(str(text_file), title="Entry text saved")
+        await self._save_entry(self._entry_text, "text")
 
     @on(GoToNextEntry)
     def action_go_to_next_entry_command(self) -> None:
