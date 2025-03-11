@@ -62,9 +62,7 @@ class EntryViewer(VerticalGroup):
 
     def compose(self) -> ComposeResult:
         """Compose the content of the widget."""
-        yield EntryContent(classes="--classic").data_bind(
-            EntryViewer.classic_view, EntryViewer.entry
-        )
+        yield EntryContent().data_bind(EntryViewer.classic_view, EntryViewer.entry)
         yield SeeAlsos().data_bind(EntryViewer.entry)
 
     def goto_line(self, line: int) -> None:
