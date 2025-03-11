@@ -435,7 +435,8 @@ class Main(EnhancedScreen[None]):
                 CopyToClipboard(
                     "\n".join(
                         make_dos_like(str(PlainText(line))) for line in self.entry.lines
-                    )
+                    ),
+                    "the entry's text",
                 )
             )
 
@@ -445,7 +446,8 @@ class Main(EnhancedScreen[None]):
         if self.entry is not None:
             self.post_message(
                 CopyToClipboard(
-                    "\n".join(make_dos_like(line) for line in self.entry.lines)
+                    "\n".join(make_dos_like(line) for line in self.entry.lines),
+                    "the entry's Norton Guide source",
                 )
             )
 
