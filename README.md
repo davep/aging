@@ -1,6 +1,6 @@
 # AgiNG - A Norton Guide reader for the terminal
 
-![AgiNG](.images/hike-social-banner.png)
+![AgiNG](.images/aging-social-banner.png)
 
 ## Introduction
 
