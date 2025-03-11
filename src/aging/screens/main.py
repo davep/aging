@@ -31,7 +31,7 @@ from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
 # Textual fspicker imports.
-from textual_fspicker import FileOpen, Filters, SelectDirectory
+from textual_fspicker import FileOpen, FileSave, Filters, SelectDirectory
 
 ##############################################################################
 # Local imports.
@@ -48,6 +48,8 @@ from ..commands import (
     GoToParent,
     GoToPreviousEntry,
     JumpToMenu,
+    SaveEntrySource,
+    SaveEntryText,
     SearchForGuide,
     SeeAlso,
     ToggleClassicView,
@@ -129,6 +131,8 @@ class Main(EnhancedScreen[None]):
         ToggleClassicView,
         BrowseForGuide,
         SearchForGuide,
+        SaveEntrySource,
+        SaveEntryText,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -334,7 +338,12 @@ class Main(EnhancedScreen[None]):
             return bool(self.guides)
         if action in (
             command.action_name()
-            for command in (CopyEntryTextToClipboard, CopyEntrySourceToClipboard)
+            for command in (
+                CopyEntryTextToClipboard,
+                CopyEntrySourceToClipboard,
+                SaveEntryText,
+                SaveEntrySource,
+            )
         ):
             return self.entry is not None
         return True
@@ -437,29 +446,61 @@ class Main(EnhancedScreen[None]):
         # Give the user some feedback.
         self.notify(f"Copied {message.description or ''}".strip())
 
+    @property
+    def _entry_text(self) -> str:
+        """The text of the current entry."""
+        return (
+            ""
+            if self.entry is None
+            else "\n".join(
+                make_dos_like(str(PlainText(line))) for line in self.entry.lines
+            )
+        )
+
+    @property
+    def _entry_source(self) -> str:
+        """The source of the current entry."""
+        return (
+            ""
+            if self.entry is None
+            else "\n".join(make_dos_like(line) for line in self.entry.lines)
+        )
+
     @on(CopyEntryTextToClipboard)
     def action_copy_entry_text_to_clipboard_command(self) -> None:
         """Copy the text of the current entry to the clipboard."""
         if self.entry is not None:
-            self.post_message(
-                CopyToClipboard(
-                    "\n".join(
-                        make_dos_like(str(PlainText(line))) for line in self.entry.lines
-                    ),
-                    "the entry's text",
-                )
-            )
+            self.post_message(CopyToClipboard(self._entry_text, "the entry's text"))
 
     @on(CopyEntrySourceToClipboard)
     def action_copy_entry_source_to_clipboard_command(self) -> None:
         """Copy the source of the current entry to the clipboard."""
         if self.entry is not None:
-            self.post_message(
-                CopyToClipboard(
-                    "\n".join(make_dos_like(line) for line in self.entry.lines),
-                    "the entry's source",
-                )
-            )
+            self.post_message(CopyToClipboard(self._entry_source, "the entry's source"))
+
+    @on(SaveEntrySource)
+    @work
+    async def action_save_entry_source_command(self) -> None:
+        """Save the current entry's text to a file."""
+        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
+            try:
+                text_file.write_text(self._entry_source, encoding="utf-8")
+            except OSError as error:
+                self.notify(str(error), title="Save error", severity="error")
+                return
+            self.notify(str(text_file), title="Entry source saved")
+
+    @on(SaveEntryText)
+    @work
+    async def action_save_entry_text_command(self) -> None:
+        """Save the current entry's text to a file."""
+        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
+            try:
+                text_file.write_text(self._entry_text, encoding="utf-8")
+            except OSError as error:
+                self.notify(str(error), title="Save error", severity="error")
+                return
+            self.notify(str(text_file), title="Entry text saved")
 
     @on(GoToNextEntry)
     def action_go_to_next_entry_command(self) -> None:

@@ -24,6 +24,8 @@ from ..commands import (
     GoToParent,
     GoToPreviousEntry,
     JumpToMenu,
+    SaveEntrySource,
+    SaveEntryText,
     SearchForGuide,
     SeeAlso,
     ToggleClassicView,
@@ -55,6 +57,8 @@ class MainCommands(CommandsProvider):
         yield Help()
         yield JumpToMenu()
         yield Quit()
+        yield from self.maybe(SaveEntrySource)
+        yield from self.maybe(SaveEntryText)
         yield from self.maybe(SeeAlso)
         yield from self.maybe(SearchForGuide)
         yield ToggleClassicView()

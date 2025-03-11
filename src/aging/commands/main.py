@@ -43,6 +43,20 @@ class CopyEntrySourceToClipboard(Command):
 
 
 ##############################################################################
+class SaveEntryText(Command):
+    """Save the text of the current entry to a file."""
+
+    BINDING_KEY = "s"
+
+
+##############################################################################
+class SaveEntrySource(Command):
+    """Save the source of the current entry to a file."""
+
+    BINDING_KEY = "S"
+
+
+##############################################################################
 class Escape(Command):
     """Back out of the application, depending on location and context"""
 
