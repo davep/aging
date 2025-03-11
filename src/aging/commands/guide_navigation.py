@@ -27,7 +27,7 @@ class GoToNextEntry(Command):
 class GoToParent(Command):
     """Navigate to the parent entry"""
 
-    BINDING_KEY = "ctrl+up"
+    BINDING_KEY = "ctrl+up, q"
     SHOW_IN_FOOTER = True
     FOOTER_TEXT = "Up"
 
