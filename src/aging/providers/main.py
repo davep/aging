@@ -43,7 +43,7 @@ class MainCommands(CommandsProvider):
         Yields:
             The commands for the command palette.
         """
-        yield AboutTheGuide()
+        yield from self.maybe(AboutTheGuide)
         yield AddGuidesToDirectory()
         yield BrowseForGuide()
         yield ChangeGuidesSide()
