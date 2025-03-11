@@ -97,7 +97,7 @@ class About(ModalScreen[None]):
         """Compose the content of the screen."""
         with Vertical() as dialog:
             dialog.border_title = f"About {self._guide.path.name}"
-            if "".join(line.strip() for line in self._guide.credits):
+            if any(line.strip() for line in self._guide.credits):
                 yield (
                     data := Data(
                         "\n".join(make_dos_like(line) for line in self._guide.credits),
