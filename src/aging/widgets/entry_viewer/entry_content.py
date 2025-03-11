@@ -222,18 +222,17 @@ class EntryContent(EnhancedOptionList):
                 )
             elif isinstance(self.entry, Long):
                 self.add_options(PlainLine(line) for line in self.entry)
-            if self.option_count:
-                # NOTE: This should simply be:
-                #
-                # self.goto_line(0)
-                #
-                # However https://github.com/Textualize/textual/issues/5632
-                # means the scrollbar goes FUBAR, hence the rather bonkers
-                # "go to the end, then go back to the start".
-                #
-                # This workaround will be removed when textual#5632 is no
-                # longer a problem.
-                self.goto_line(len(self.entry.lines) - 1).goto_line(0)
+            # NOTE: This should simply be:
+            #
+            # self.goto_line(0)
+            #
+            # However https://github.com/Textualize/textual/issues/5632
+            # means the scrollbar goes FUBAR, hence the rather bonkers "go
+            # to the end, then go back to the start".
+            #
+            # This workaround will be removed when textual#5632 is no longer
+            # a problem.
+            self.goto_line(len(self.entry.lines) - 1).goto_line(0)
 
     @on(EnhancedOptionList.OptionSelected)
     def _line_selected(self, message: EnhancedOptionList.OptionSelected) -> None:
