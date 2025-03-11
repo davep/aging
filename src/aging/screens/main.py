@@ -2,6 +2,7 @@
 
 ##############################################################################
 # Python imports.
+from argparse import Namespace
 from pathlib import Path
 from typing import Iterator
 
@@ -147,6 +148,16 @@ class Main(EnhancedScreen[None]):
     classic_view: var[bool] = var(False, init=False)
     """Should the entry viewer use a classic Norton Guide colour scheme?"""
 
+    def __init__(self, arguments: Namespace) -> None:
+        """Initialise the main screen.
+
+        Args:
+            arguments: The arguments passed to the application on the command line.
+        """
+        self._arguments = arguments
+        """The arguments passed on the command line."""
+        super().__init__()
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
@@ -240,7 +251,9 @@ class Main(EnhancedScreen[None]):
         self.guides_visible = config.guides_directory_visible
         self.guides_on_right = config.guides_directory_on_right
         self.classic_view = config.classic_view
-        if config.current_guide:
+        if self._arguments.guide:
+            self.post_message(OpenGuide(self._arguments.guide))
+        elif config.current_guide:
             self.post_message(
                 OpenGuide(Path(config.current_guide), config.current_entry)
             )

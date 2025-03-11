@@ -1,6 +1,10 @@
 """The main application class."""
 
 ##############################################################################
+# Python imports.
+from argparse import Namespace
+
+##############################################################################
 # Textual imports.
 from textual.app import InvalidThemeError
 
@@ -48,12 +52,14 @@ class AgiNG(EnhancedApp[None]):
 
     COMMANDS = set()
 
-    def __init__(self) -> None:
+    def __init__(self, arguments: Namespace) -> None:
         """Initialise the application.
 
         Args:
-            The command line arguments passed to the application.
+            arguments: The command line arguments passed to the application.
         """
+        self._arguments = arguments
+        """The command line arguments passed to the application."""
         super().__init__()
         configuration = load_configuration()
         if configuration.theme is not None:
@@ -69,7 +75,7 @@ class AgiNG(EnhancedApp[None]):
 
     def get_default_screen(self) -> Main:
         """Get the main screen for the application."""
-        return Main()
+        return Main(self._arguments)
 
 
 ### aging.py ends here
