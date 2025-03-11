@@ -425,7 +425,7 @@ class Main(EnhancedScreen[None]):
         except PyperclipException:
             pass
         # Give the user some feedback.
-        self.notify("Copied")
+        self.notify(f"Copied {message.description or ''}".strip())
 
     @on(CopyEntryToClipboard)
     def action_copy_entry_to_clipboard_command(self) -> None:

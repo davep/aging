@@ -17,5 +17,8 @@ class CopyToClipboard(Message):
     text: str
     """The text to copy to the clipboard."""
 
+    description: str | None = None
+    """Optional description of the text that is being copied."""
+
 
 ### clipboard.py ends here
