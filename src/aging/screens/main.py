@@ -48,6 +48,7 @@ from ..commands import (
     GoToParent,
     GoToPreviousEntry,
     JumpToMenu,
+    SearchForGuide,
     SeeAlso,
     ToggleClassicView,
     ToggleGuides,
@@ -61,7 +62,7 @@ from ..data import (
     update_configuration,
 )
 from ..messages import CopyToClipboard, OpenEntry, OpenGuide
-from ..providers import MainCommands
+from ..providers import GuidesCommands, MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 from .about import About
 
@@ -127,6 +128,7 @@ class Main(EnhancedScreen[None]):
         JumpToMenu,
         ToggleClassicView,
         BrowseForGuide,
+        SearchForGuide,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -195,6 +197,10 @@ class Main(EnhancedScreen[None]):
     def _refresh_sub_title(self) -> None:
         """Refresh the subtitle of the window."""
         self.sub_title = " » ".join(self.entry_path)
+
+    def _watch_guides(self) -> None:
+        """React to the list of guides being changed."""
+        GuidesCommands.guides = self.guides
 
     def _watch_guides_visible(self) -> None:
         """React to the guides directory viability flag being changed."""
@@ -324,6 +330,8 @@ class Main(EnhancedScreen[None]):
             if isinstance(self.entry, Long):
                 return self.entry.has_see_also or None
             return False
+        if action == SearchForGuide.action_name():
+            return bool(self.guides)
         if action in (
             command.action_name()
             for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
@@ -543,6 +551,11 @@ class Main(EnhancedScreen[None]):
             )
         ) is not None:
             self.post_message(OpenGuide(guide))
+
+    @on(SearchForGuide)
+    def action_search_for_guide_command(self) -> None:
+        """Search the directory for a guide and view it."""
+        self.show_palette(GuidesCommands)
 
 
 ### main.py ends here

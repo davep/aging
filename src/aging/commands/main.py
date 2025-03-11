@@ -15,6 +15,13 @@ class ToggleGuides(Command):
 
 
 ##############################################################################
+class SearchForGuide(Command):
+    """Search for a guide in the directory and open it"""
+
+    BINDING_KEY = "G"
+
+
+##############################################################################
 class ChangeGuidesSide(Command):
     """Change which side the guides directory loves on"""
 
