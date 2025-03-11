@@ -15,6 +15,7 @@ from textual_enhanced.commands import (
 from ..commands import (
     AboutTheGuide,
     AddGuidesToDirectory,
+    BrowseForGuide,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
@@ -41,6 +42,7 @@ class MainCommands(CommandsProvider):
         """
         yield AboutTheGuide()
         yield AddGuidesToDirectory()
+        yield BrowseForGuide()
         yield ChangeGuidesSide()
         yield ChangeTheme()
         yield from self.maybe(CopyEntryToClipboard)

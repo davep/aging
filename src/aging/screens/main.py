@@ -31,7 +31,7 @@ from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
 # Textual fspicker imports.
-from textual_fspicker import SelectDirectory
+from textual_fspicker import FileOpen, Filters, SelectDirectory
 
 ##############################################################################
 # Local imports.
@@ -39,6 +39,7 @@ from .. import __version__
 from ..commands import (
     AboutTheGuide,
     AddGuidesToDirectory,
+    BrowseForGuide,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
     CopyEntryToClipboard,
@@ -125,6 +126,7 @@ class Main(EnhancedScreen[None]):
         Escape,
         JumpToMenu,
         ToggleClassicView,
+        BrowseForGuide,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -526,6 +528,21 @@ class Main(EnhancedScreen[None]):
     def action_toggle_classic_view_command(self) -> None:
         """Toggle the classic view of the guide entry."""
         self.classic_view = not self.classic_view
+
+    @on(BrowseForGuide)
+    @work
+    async def action_browse_for_guide_command(self) -> None:
+        """Browse the filesystem for a guide to view"""
+        if (
+            guide := await self.app.push_screen_wait(
+                FileOpen(
+                    filters=Filters(
+                        ("Norton Guides", lambda p: p.suffix.lower() == ".ng")
+                    )
+                )
+            )
+        ) is not None:
+            self.post_message(OpenGuide(guide))
 
 
 ### main.py ends here

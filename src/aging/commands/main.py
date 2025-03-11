@@ -65,4 +65,11 @@ class ToggleClassicView(Command):
     BINDING_KEY = "f4"
 
 
+##############################################################################
+class BrowseForGuide(Command):
+    """Browse the filesystem for a guide to view"""
+
+    BINDING_KEY = "ctrl+o"
+
+
 ### main.py ends here
