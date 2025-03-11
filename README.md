@@ -1,5 +1,7 @@
 # AgiNG - A Norton Guide reader for the terminal
 
+![AgiNG](.images/hike-social-banner.png)
+
 ## Introduction
 
 AgiNG is the latest in [a long line of Norton Guide tools and
@@ -35,12 +37,12 @@ Once installed run the `aging` command.
 The best way to get to know AgiNG is to read the help screen. Once in the
 application you can see this by pressing <kbd>F1</kbd>.
 
-TODO: Screenshot of help here.
+![AgiNG Help](.images/aging-help-screen.png)
 
 Commands can also be discovered via the command palette
 (<kbd>ctrl</kbd>+<kbd>p</kbd>):
 
-TODO: Screenshot of command palette here.
+![The command palette](.images/aging-command-palette.png)
 
 ## Features
 
