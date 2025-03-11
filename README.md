@@ -1,6 +1,6 @@
 # AgiNG - A Norton Guide reader for the terminal
 
-![AgiNG](.images/aging-social-banner.png)
+![AgiNG](https://raw.githubusercontent.com/davep/aging/refs/heads/main/.images/aging-social-banner.png)
 
 ## Introduction
 
@@ -37,12 +37,12 @@ Once installed run the `aging` command.
 The best way to get to know AgiNG is to read the help screen. Once in the
 application you can see this by pressing <kbd>F1</kbd>.
 
-![AgiNG Help](.images/aging-help-screen.png)
+![AgiNG Help](https://raw.githubusercontent.com/davep/aging/refs/heads/main/.images/aging-help-screen.png)
 
 Commands can also be discovered via the command palette
 (<kbd>ctrl</kbd>+<kbd>p</kbd>):
 
-![The command palette](.images/aging-command-palette.png)
+![The command palette](https://raw.githubusercontent.com/davep/aging/refs/heads/main/.images/aging-command-palette.png)
 
 ## Features
 
