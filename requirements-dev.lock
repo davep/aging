@@ -33,6 +33,8 @@ filelock==3.17.0
 frozenlist==1.5.0
     # via aiohttp
     # via aiosignal
+humanize==4.12.1
+    # via aging
 identify==2.6.9
     # via pre-commit
 idna==3.10

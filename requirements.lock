@@ -10,6 +10,8 @@
 #   universal: false
 
 -e file:.
+humanize==4.12.1
+    # via aging
 linkify-it-py==2.0.3
     # via markdown-it-py
 markdown-it-py==3.0.0
