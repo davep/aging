@@ -11,6 +11,7 @@ from .main import (
     CopyEntryToClipboard,
     Escape,
     JumpToMenu,
+    ToggleClassicView,
     ToggleGuides,
 )
 
@@ -28,6 +29,7 @@ __all__ = [
     "GoToPreviousEntry",
     "JumpToMenu",
     "SeeAlso",
+    "ToggleClassicView",
     "ToggleGuides",
 ]
 

@@ -58,4 +58,11 @@ class AboutTheGuide(Command):
     FOOTER_TEXT = "About"
 
 
+##############################################################################
+class ToggleClassicView(Command):
+    """Toggle the classic Norton Guide colour scheme in the entry viewer"""
+
+    BINDING_KEY = "f4"
+
+
 ### main.py ends here

@@ -34,6 +34,9 @@ class Configuration:
     current_entry: int | None = None
     """The entry the user is currently viewing."""
 
+    classic_view: bool = False
+    """Should the entry view use a classic Norton Guide colour scheme?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:

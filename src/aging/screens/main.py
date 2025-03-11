@@ -47,6 +47,7 @@ from ..commands import (
     GoToPreviousEntry,
     JumpToMenu,
     SeeAlso,
+    ToggleClassicView,
     ToggleGuides,
 )
 from ..data import (
@@ -122,6 +123,7 @@ class Main(EnhancedScreen[None]):
         CopyEntryToClipboard,
         Escape,
         JumpToMenu,
+        ToggleClassicView,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -142,6 +144,9 @@ class Main(EnhancedScreen[None]):
     guides_on_right: var[bool] = var(False, init=False)
     """Should the guides directory be docked to the right?"""
 
+    classic_view: var[bool] = var(False, init=False)
+    """Should the entry viewer use a classic Norton Guide colour scheme?"""
+
     def compose(self) -> ComposeResult:
         """Compose the content of the main screen."""
         yield Header()
@@ -150,7 +155,7 @@ class Main(EnhancedScreen[None]):
                 Main.guides, Main.guide, dock_right=Main.guides_on_right
             )
             yield GuideMenu(classes="panel").data_bind(Main.guide, Main.entry)
-            yield EntryViewer(classes="panel").data_bind(Main.entry)
+            yield EntryViewer(classes="panel").data_bind(Main.entry, Main.classic_view)
         yield Footer()
 
     @property
@@ -229,6 +234,7 @@ class Main(EnhancedScreen[None]):
         config = load_configuration()
         self.guides_visible = config.guides_directory_visible
         self.guides_on_right = config.guides_directory_on_right
+        self.classic_view = config.classic_view
         if config.current_guide:
             self.post_message(
                 OpenGuide(Path(config.current_guide), config.current_entry)
@@ -495,6 +501,11 @@ class Main(EnhancedScreen[None]):
         """Show details about the guide."""
         if self.guide is not None:
             self.app.push_screen(About(self.guide))
+
+    @on(ToggleClassicView)
+    def action_toggle_classic_view_command(self) -> None:
+        """Toggle the classic view of the guide entry."""
+        self.classic_view = not self.classic_view
 
 
 ### main.py ends here

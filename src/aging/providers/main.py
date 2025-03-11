@@ -24,6 +24,7 @@ from ..commands import (
     GoToPreviousEntry,
     JumpToMenu,
     SeeAlso,
+    ToggleClassicView,
     ToggleGuides,
 )
 
@@ -52,6 +53,7 @@ class MainCommands(CommandsProvider):
         yield JumpToMenu()
         yield Quit()
         yield from self.maybe(SeeAlso)
+        yield ToggleClassicView()
         yield ToggleGuides()
 
 

@@ -199,6 +199,24 @@ class EntryContent(EnhancedOptionList):
         &:focus {
             border: none;
         }
+
+        /* Optional classic Norton Guide styling. */
+        &.--classic {
+            color: #ffffff;
+            background: #0000aa;
+            opacity: 90%;
+            & > .option-list--option-highlighted {
+                color: #ffffff;
+                background: #770000;
+            }
+            &:focus {
+                opacity: 100%;
+                & > .option-list--option-highlighted {
+                    color: #ffffff;
+                    background: #aa0000;
+                }
+            }
+        }
     }
     """
 
@@ -208,8 +226,15 @@ class EntryContent(EnhancedOptionList):
     This is the content of the currently-selected entry in the Norton Guide.
     """
 
+    classic_view: var[bool] = var(False)
+    """Should we view the guide in the classic colour scheme?"""
+
     entry: var[Short | Long | None] = var(None)
     """The [entry][ngdb.Entry] being viewed, or [`None`][None] if no entry."""
+
+    def _watch_classic_view(self) -> None:
+        """Handle the classic view flag being changed."""
+        self.set_class(self.classic_view, "--classic")
 
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
