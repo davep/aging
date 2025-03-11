@@ -8,10 +8,10 @@ from typing import Final
 ##############################################################################
 # NGDB imports.
 from ngdb import Link, Long, MarkupText, Short, make_dos_like
-from rich.markup import escape
 
 ##############################################################################
 # Rich imports.
+from rich.markup import escape
 from rich.segment import Segment
 from rich.text import Text
 
