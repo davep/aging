@@ -42,7 +42,7 @@ from ..commands import (
     BrowseForGuide,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
-    CopyEntryToClipboard,
+    CopyEntryTextToClipboard,
     Escape,
     GoToNextEntry,
     GoToParent,
@@ -123,7 +123,7 @@ class Main(EnhancedScreen[None]):
         ChangeGuidesSide,
         ChangeTheme,
         CopyEntrySourceToClipboard,
-        CopyEntryToClipboard,
+        CopyEntryTextToClipboard,
         Escape,
         JumpToMenu,
         ToggleClassicView,
@@ -334,7 +334,7 @@ class Main(EnhancedScreen[None]):
             return bool(self.guides)
         if action in (
             command.action_name()
-            for command in (CopyEntryToClipboard, CopyEntrySourceToClipboard)
+            for command in (CopyEntryTextToClipboard, CopyEntrySourceToClipboard)
         ):
             return self.entry is not None
         return True
@@ -437,8 +437,8 @@ class Main(EnhancedScreen[None]):
         # Give the user some feedback.
         self.notify(f"Copied {message.description or ''}".strip())
 
-    @on(CopyEntryToClipboard)
-    def action_copy_entry_to_clipboard_command(self) -> None:
+    @on(CopyEntryTextToClipboard)
+    def action_copy_entry_text_to_clipboard_command(self) -> None:
         """Copy the text of the current entry to the clipboard."""
         if self.entry is not None:
             self.post_message(
@@ -457,7 +457,7 @@ class Main(EnhancedScreen[None]):
             self.post_message(
                 CopyToClipboard(
                     "\n".join(make_dos_like(line) for line in self.entry.lines),
-                    "the entry's Norton Guide source",
+                    "the entry's source",
                 )
             )
 

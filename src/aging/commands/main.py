@@ -29,7 +29,7 @@ class ChangeGuidesSide(Command):
 
 
 ##############################################################################
-class CopyEntryToClipboard(Command):
+class CopyEntryTextToClipboard(Command):
     """Copy the text of the current entry to the clipboard"""
 
     BINDING_KEY = "c"

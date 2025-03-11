@@ -18,7 +18,7 @@ from ..commands import (
     BrowseForGuide,
     ChangeGuidesSide,
     CopyEntrySourceToClipboard,
-    CopyEntryToClipboard,
+    CopyEntryTextToClipboard,
     Escape,
     GoToNextEntry,
     GoToParent,
@@ -46,7 +46,7 @@ class MainCommands(CommandsProvider):
         yield BrowseForGuide()
         yield ChangeGuidesSide()
         yield ChangeTheme()
-        yield from self.maybe(CopyEntryToClipboard)
+        yield from self.maybe(CopyEntryTextToClipboard)
         yield from self.maybe(CopyEntrySourceToClipboard)
         yield Escape()
         yield from self.maybe(GoToNextEntry)
