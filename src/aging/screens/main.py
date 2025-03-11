@@ -336,6 +336,8 @@ class Main(EnhancedScreen[None]):
             return False
         if action == SearchForGuide.action_name():
             return bool(self.guides)
+        if action == AboutTheGuide.action_name():
+            return bool(self.guide) or None
         if action in (
             command.action_name()
             for command in (
