@@ -81,7 +81,7 @@ class About(ModalScreen[None]):
     }
     """
 
-    BINDINGS = [("escape, f3", "dismiss(None)")]
+    BINDINGS = [("escape", "dismiss(None)")]
 
     def __init__(self, guide: NortonGuide) -> None:
         """Initialise the object.
