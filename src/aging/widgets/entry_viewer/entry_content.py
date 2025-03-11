@@ -242,10 +242,7 @@ class EntryContent(EnhancedOptionList):
             message: The message telling us that a line was selected.
         """
         message.stop()
-        if isinstance(message.option, PlainLine):
-            return
-        assert isinstance(message.option, JumpLine)
-        if message.option.link.has_offset:
+        if isinstance(message.option, JumpLine) and message.option.link.has_offset:
             self.post_message(OpenEntry(message.option.link.offset))
 
     def goto_line(self, line: int) -> Self:
