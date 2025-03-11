@@ -189,6 +189,11 @@ class Main(EnhancedScreen[None]):
         with update_configuration() as config:
             config.guides_directory_visible = self.guides_visible
 
+    def _watch_classic_view(self) -> None:
+        """React to the classic view being changed."""
+        with update_configuration() as config:
+            config.classic_view = self.classic_view
+
     def _watch_guides_on_right(self) -> None:
         """React to the guides location being changed."""
         with update_configuration() as config:
