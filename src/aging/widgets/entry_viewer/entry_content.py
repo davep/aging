@@ -305,6 +305,12 @@ class EntryContent(EnhancedOptionList):
         if self.scroll_offset.y + y == self.highlighted:
             if highlight := self.get_visual_style("option-list--option-highlighted"):
                 highlight_style = highlight.rich_style
+                # Despite its name, Style.without_color removes more than
+                # colour; one of the things it removes it `meta`. The
+                # OptionList uses meta to know which option was clicked on.
+                # So we need to peek into the highlight strip and pull out
+                # an example of the style so we can get the meta for later.
+                borrowed_style = next(iter(strip)).style
                 strip = Strip(
                     [
                         Segment(
@@ -317,7 +323,13 @@ class EntryContent(EnhancedOptionList):
                         for text, style, control in strip
                     ]
                 ).simplify()
-
+                # So here, if we have a borrowed style, and if it has meta
+                # information, we apply it to the new strip we created so
+                # that the `option` value is retained. Without it the user
+                # wouldn't be able to cause an `OptionSelected` message from
+                # clicking on a highlighted option.
+                if borrowed_style is not None and borrowed_style.meta:
+                    strip = strip.apply_meta(borrowed_style.meta)
         return strip
 
 
