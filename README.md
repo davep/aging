@@ -2,6 +2,14 @@
 
 ![AgiNG](https://raw.githubusercontent.com/davep/aging/refs/heads/main/.images/aging-social-banner.png)
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/davep/aging/style-lint-and-test.yaml)](https://github.com/davep/aging/actions)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/davep/aging/latest)](https://github.com/davep/aging/commits/main/)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/davep/aging)](https://github.com/davep/aging/issues)
+[![GitHub Release Date](https://img.shields.io/github/release-date/davep/aging)](https://github.com/davep/aging/releases)
+[![PyPI - License](https://img.shields.io/pypi/l/aging)](https://github.com/davep/aging/blob/main/LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/aging)](https://github.com/davep/aging/blob/main/pyproject.toml)
+[![PyPI - Version](https://img.shields.io/pypi/v/aging)](https://pypi.org/project/aging/)
+
 ## Introduction
 
 AgiNG is the latest in [a long line of Norton Guide tools and
