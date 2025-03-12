@@ -5,7 +5,7 @@
 **Released: WiP**
 
 - Fixed not being able to navigate into a child entry by mouse-clicking on a
-  highlighted line.
+  highlighted line. ([#11](https://github.com/davep/aging/pull/11))
 
 ## v0.1.0
 
