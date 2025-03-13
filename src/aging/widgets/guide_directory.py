@@ -1,23 +1,29 @@
 """Provides the guide directory widget."""
 
 ##############################################################################
+# Python imports.
+from dataclasses import replace
+
+##############################################################################
 # NGDB imports.
 from ngdb import NortonGuide
 
 ##############################################################################
 # Textual imports.
-from textual import on
+from textual import on, work
+from textual.binding import Binding
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
+from textual_enhanced.dialogs import ModalInput
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
 # Local imports.
-from ..data import Guide, Guides
-from ..messages import OpenGuide
+from ..data import Guide, Guides, save_guides
+from ..messages import GuidesUpdated, OpenGuide
 
 
 ##############################################################################
@@ -65,6 +71,8 @@ class GuideDirectory(EnhancedOptionList):
     to the application.
     """
 
+    BINDINGS = [Binding("r", "rename", "Rename")]
+
     dock_right: var[bool] = var(False)
     """Should the directory dock to the right?"""
 
@@ -84,6 +92,7 @@ class GuideDirectory(EnhancedOptionList):
         """React to the guides being changed."""
         with self.preserved_highlight:
             self.clear_options().add_options(GuideView(guide) for guide in self.guides)
+        self.refresh_bindings()
 
     def _watch_dock_right(self) -> None:
         """React to the dock toggle being changed."""
@@ -99,6 +108,7 @@ class GuideDirectory(EnhancedOptionList):
             )
         except OptionDoesNotExist:
             pass
+        self.refresh_bindings()
 
     @on(EnhancedOptionList.OptionSelected)
     def _open_guide(self, message: EnhancedOptionList.OptionSelected) -> None:
@@ -110,6 +120,39 @@ class GuideDirectory(EnhancedOptionList):
         message.stop()
         assert isinstance(message.option, GuideView)
         self.post_message(OpenGuide(message.option.guide.location))
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """Check if an action is possible to perform right now.
+
+        Args:
+            action: The action to perform.
+            parameters: The parameters of the action.
+
+        Returns:
+            `True` if it can perform, `False` or `None` if not.
+        """
+        if self.is_mounted:
+            if action == "rename":
+                return bool(self.guides)
+        return True
+
+    @work
+    async def action_rename(self) -> None:
+        """Rename the current guide."""
+        if self.highlighted is None:
+            return
+        if new_title := await self.app.push_screen_wait(
+            ModalInput(initial=self.guides[self.highlighted].title)
+        ):
+            (new_guides := list(self.guides))[self.highlighted] = replace(
+                self.guides[self.highlighted], title=new_title
+            )
+            try:
+                save_guides(sorted(new_guides))
+            except IOError as error:
+                self.notify(str(error), title="Unable to save guides", severity="error")
+                return
+            self.post_message(GuidesUpdated())
 
 
 ### guide_directory.py ends here
