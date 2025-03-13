@@ -18,7 +18,7 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
-from textual_enhanced.dialogs import ModalInput
+from textual_enhanced.dialogs import Confirm, ModalInput
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
@@ -72,7 +72,7 @@ class GuideDirectory(EnhancedOptionList):
     to the application.
     """
 
-    BINDINGS = [Binding("r", "rename", "Rename")]
+    BINDINGS = [Binding("r", "rename", "Rename"), Binding("delete", "remove", "Remove")]
 
     dock_right: var[bool] = var(False)
     """Should the directory dock to the right?"""
@@ -135,9 +135,43 @@ class GuideDirectory(EnhancedOptionList):
             `True` if it can perform, `False` or `None` if not.
         """
         if self.is_mounted:
-            if action == "rename":
+            if action in ("rename", "remove"):
                 return bool(self.guides)
         return True
+
+    def _guide_index(self, guide: Guide) -> int | None:
+        """Get the index of a guide.
+
+        Args:
+            guide: The guide to get the index for.
+
+        Returns:
+            The index of the guide, or [`None`][None] if it can't be found.
+
+        Notes:
+            The search is done using the guide's path.
+        """
+        return next(
+            (
+                index
+                for index, candidate in enumerate(self.guides)
+                if guide.location == candidate
+            ),
+            None,
+        )
+
+    def _refresh_guides(self, new_guides: Guides) -> None:
+        """Save and update the guides app-wide.
+
+        Args:
+            new_guides: The new guides to use.
+        """
+        try:
+            save_guides(new_guides)
+        except IOError as error:
+            self.notify(str(error), title="Unable to save guides", severity="error")
+            return
+        self.post_message(GuidesUpdated())
 
     @work
     async def action_rename(self) -> None:
@@ -148,24 +182,32 @@ class GuideDirectory(EnhancedOptionList):
         if new_title := await self.app.push_screen_wait(
             ModalInput(initial=old_guide.title)
         ):
-            guides = list(self.guides)
-            if (
-                guide_index := next(
-                    (
-                        index
-                        for index, guide in enumerate(guides)
-                        if guide == old_guide.location
-                    ),
-                    None,
-                )
-            ) is not None:
-                guides[guide_index] = replace(old_guide, title=new_title)
-            try:
-                save_guides(guides)
-            except IOError as error:
-                self.notify(str(error), title="Unable to save guides", severity="error")
+            if (guide_index := self._guide_index(old_guide)) is None:
                 return
-            self.post_message(GuidesUpdated())
+            (guides := self.guides.copy())[guide_index] = replace(
+                old_guide, title=new_title
+            )
+            self._refresh_guides(guides)
+
+    @work
+    async def action_remove(self) -> None:
+        """Remove the current guide."""
+        if self.highlighted is None:
+            return
+        guide_to_remove = cast(
+            GuideView, self.get_option_at_index(self.highlighted)
+        ).guide
+        if await self.app.push_screen_wait(
+            Confirm(
+                "Delete?",
+                f"Are you sure you wish to delete this guide?\n\n{guide_to_remove.title}\n{guide_to_remove.location}",
+            )
+        ):
+            if (guide_index := self._guide_index(guide_to_remove)) is None:
+                return
+            guides = self.guides.copy()
+            del guides[guide_index]
+            self._refresh_guides(guides)
 
 
 ### guide_directory.py ends here
