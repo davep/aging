@@ -28,7 +28,7 @@ class GuidesCommands(CommandsProvider):
         Yields:
             Commands to show in the command palette.
         """
-        for guide in self.guides:
+        for guide in sorted(self.guides):
             yield CommandHit(
                 f"{guide.title} ({guide.location.name})",
                 f"Open and view {guide.location.name}",

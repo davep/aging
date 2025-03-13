@@ -3,6 +3,7 @@
 ##############################################################################
 # Python imports.
 from dataclasses import replace
+from typing import cast
 
 ##############################################################################
 # NGDB imports.
@@ -91,7 +92,9 @@ class GuideDirectory(EnhancedOptionList):
     def _watch_guides(self) -> None:
         """React to the guides being changed."""
         with self.preserved_highlight:
-            self.clear_options().add_options(GuideView(guide) for guide in self.guides)
+            self.clear_options().add_options(
+                GuideView(guide) for guide in sorted(self.guides)
+            )
         self.refresh_bindings()
 
     def _watch_dock_right(self) -> None:
@@ -141,14 +144,24 @@ class GuideDirectory(EnhancedOptionList):
         """Rename the current guide."""
         if self.highlighted is None:
             return
+        old_guide = cast(GuideView, self.get_option_at_index(self.highlighted)).guide
         if new_title := await self.app.push_screen_wait(
-            ModalInput(initial=self.guides[self.highlighted].title)
+            ModalInput(initial=old_guide.title)
         ):
-            (new_guides := list(self.guides))[self.highlighted] = replace(
-                self.guides[self.highlighted], title=new_title
-            )
+            guides = list(self.guides)
+            if (
+                guide_index := next(
+                    (
+                        index
+                        for index, guide in enumerate(guides)
+                        if guide == old_guide.location
+                    ),
+                    None,
+                )
+            ) is not None:
+                guides[guide_index] = replace(old_guide, title=new_title)
             try:
-                save_guides(sorted(new_guides))
+                save_guides(guides)
             except IOError as error:
                 self.notify(str(error), title="Unable to save guides", severity="error")
                 return

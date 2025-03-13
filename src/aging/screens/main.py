@@ -282,7 +282,7 @@ class Main(EnhancedScreen[None]):
         # duplicates based on title are fine and it's up to the user to
         # decide if they want to remove them or not.
         if guides := [guide for guide in guides if guide.location not in self.guides]:
-            self.guides = sorted(self.guides + guides)
+            self.guides = self.guides + guides
             save_guides(self.guides)
             self.notify(f"New guides scanned and added: {len(guides)}")
         else:
