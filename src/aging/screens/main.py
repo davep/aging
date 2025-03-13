@@ -489,7 +489,11 @@ class Main(EnhancedScreen[None]):
         """
         if self.entry is None:
             return
-        if (text_file := await self.app.push_screen_wait(FileSave())) is not None:
+        if (
+            text_file := await self.app.push_screen_wait(
+                FileSave(title=f"Save {content_type} as...")
+            )
+        ) is not None:
             try:
                 text_file.write_text(content, encoding="utf-8")
             except OSError as error:
