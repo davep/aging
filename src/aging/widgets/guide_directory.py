@@ -72,7 +72,12 @@ class GuideDirectory(EnhancedOptionList):
     to the application.
     """
 
-    BINDINGS = [Binding("r", "rename", "Rename"), Binding("delete", "remove", "Remove")]
+    BINDINGS = [
+        Binding(
+            "r", "rename", "Rename", tooltip="Rename the title of the highlighted guide"
+        ),
+        Binding("delete", "remove", "Remove", tooltip="Remove the highlighted guide"),
+    ]
 
     dock_right: var[bool] = var(False)
     """Should the directory dock to the right?"""
