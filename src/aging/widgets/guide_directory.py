@@ -76,7 +76,18 @@ class GuideDirectory(EnhancedOptionList):
         Binding(
             "r", "rename", "Rename", tooltip="Rename the title of the highlighted guide"
         ),
-        Binding("delete", "remove", "Remove", tooltip="Remove the highlighted guide"),
+        Binding(
+            "delete",
+            "remove",
+            "Remove",
+            tooltip="Remove the highlighted guide from the directory",
+        ),
+        Binding(
+            "ctrl+delete",
+            "remove_all",
+            "Remove all",
+            tooltip="Remove all guides from the directory",
+        ),
     ]
 
     dock_right: var[bool] = var(False)
@@ -141,6 +152,8 @@ class GuideDirectory(EnhancedOptionList):
         """
         if self.is_mounted:
             if action in ("rename", "remove"):
+                return self.highlighted is not None
+            if action == "remove_all":
                 return bool(self.guides)
         return True
 
@@ -213,6 +226,17 @@ class GuideDirectory(EnhancedOptionList):
             guides = self.guides.copy()
             del guides[guide_index]
             self._refresh_guides(guides)
+
+    @work
+    async def action_remove_all(self) -> None:
+        """Remove all guides from the directory."""
+        if await self.app.push_screen_wait(
+            Confirm(
+                "Remove all?",
+                "Are you sure you want to remove all guides from the directory?",
+            )
+        ):
+            self._refresh_guides([])
 
 
 ### guide_directory.py ends here
