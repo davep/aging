@@ -6,6 +6,12 @@
 
 - Fixed not being able to navigate into a child entry by mouse-clicking on a
   highlighted line. ([#11](https://github.com/davep/aging/pull/11))
+- Added the ability to rename the title of a guide as it appears in the
+  guide directory. ([#13](https://github.com/davep/aging/pull/13))
+- Added the ability to remove a guide from the guide directory.
+  ([#13](https://github.com/davep/aging/pull/13))
+- Added the ability to remove all guides from the guide directory.
+  ([#13](https://github.com/davep/aging/pull/13))
 
 ## v0.1.0
 
