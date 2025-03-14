@@ -37,6 +37,9 @@ class Configuration:
     classic_view: bool = False
     """Should the entry view use a classic Norton Guide colour scheme?"""
 
+    last_added_guides_from: str = "."
+    """The location the user last added guides from."""
+
 
 ##############################################################################
 def configuration_file() -> Path:
