@@ -13,8 +13,11 @@
 - Added the ability to remove all guides from the guide directory.
   ([#13](https://github.com/davep/aging/pull/13))
 - The dialog for adding guides to the guide directory now remembers the
-  last-selected directory, and starts from there on next use
-  (#14[](https://github.com/davep/aging/pull/14)).
+  last-selected directory, and starts from there on next use.
+  (#14[](https://github.com/davep/aging/pull/14))
+- When browsing to open an individual guide from the filesystem the
+  application remembers the last location a guide was opened from and starts
+  there. (#14[](https://github.com/davep/aging/pull/14))
 
 ## v0.1.0
 
