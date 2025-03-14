@@ -1,8 +1,8 @@
 # Aging ChangeLog
 
-## Unreleased
+## v0.2.0
 
-**Released: WiP**
+**Released: 2025-03-14**
 
 - Fixed not being able to navigate into a child entry by mouse-clicking on a
   highlighted line. ([#11](https://github.com/davep/aging/pull/11))
