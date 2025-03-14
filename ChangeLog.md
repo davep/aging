@@ -12,6 +12,9 @@
   ([#13](https://github.com/davep/aging/pull/13))
 - Added the ability to remove all guides from the guide directory.
   ([#13](https://github.com/davep/aging/pull/13))
+- The dialog for adding guides to the guide directory now remembers the
+  last-selected directory, and starts from there on next use
+  (#14[](https://github.com/davep/aging/pull/14)).
 
 ## v0.1.0
 
