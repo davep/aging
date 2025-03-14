@@ -34,4 +34,9 @@ class OpenEntry(Message):
     """The optional line to highlight once the entry is opened."""
 
 
+##############################################################################
+class GuidesUpdated(Message):
+    """Message sent when the guide directory has been updated."""
+
+
 ### main.py ends here

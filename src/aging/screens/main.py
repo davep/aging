@@ -63,7 +63,7 @@ from ..data import (
     save_guides,
     update_configuration,
 )
-from ..messages import CopyToClipboard, OpenEntry, OpenGuide
+from ..messages import CopyToClipboard, GuidesUpdated, OpenEntry, OpenGuide
 from ..providers import GuidesCommands, MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 from .about import About
@@ -282,7 +282,7 @@ class Main(EnhancedScreen[None]):
         # duplicates based on title are fine and it's up to the user to
         # decide if they want to remove them or not.
         if guides := [guide for guide in guides if guide.location not in self.guides]:
-            self.guides = sorted(self.guides + guides)
+            self.guides = self.guides + guides
             save_guides(self.guides)
             self.notify(f"New guides scanned and added: {len(guides)}")
         else:
@@ -349,6 +349,11 @@ class Main(EnhancedScreen[None]):
         ):
             return self.entry is not None
         return True
+
+    @on(GuidesUpdated)
+    def _reload_guides(self) -> None:
+        """Reaload the guide directory from storage."""
+        self.guides = load_guides()
 
     @on(AddGuidesToDirectory)
     @work
