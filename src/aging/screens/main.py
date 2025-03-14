@@ -295,6 +295,8 @@ class Main(EnhancedScreen[None]):
         Args:
             directory: The directory to scan for Norton Guides.
         """
+        with update_configuration() as config:
+            config.last_added_guides_from = str(directory.resolve())
         worker = get_current_worker()
         guides: list[Guide] = []
         for candidate in directory.glob("**/*.*"):
@@ -360,7 +362,10 @@ class Main(EnhancedScreen[None]):
     async def action_add_guides_to_directory_command(self) -> None:
         """Let the user add more guides to the guide directory."""
         if add_from := await self.app.push_screen_wait(
-            SelectDirectory(title="Add Norton Guides From...")
+            SelectDirectory(
+                Path(load_configuration().last_added_guides_from),
+                title="Add Norton Guides From...",
+            )
         ):
             self._add_guides_from(add_from)
 
@@ -601,13 +606,16 @@ class Main(EnhancedScreen[None]):
         if (
             guide := await self.app.push_screen_wait(
                 FileOpen(
+                    Path(load_configuration().last_opened_guide_from),
                     filters=Filters(
                         ("Norton Guides", lambda p: p.suffix.lower() == ".ng")
-                    )
+                    ),
                 )
             )
         ) is not None:
             self.post_message(OpenGuide(guide))
+            with update_configuration() as config:
+                config.last_opened_guide_from = str(guide.parent)
 
     @on(SearchForGuide)
     def action_search_for_guide_command(self) -> None:
