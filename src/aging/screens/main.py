@@ -606,13 +606,16 @@ class Main(EnhancedScreen[None]):
         if (
             guide := await self.app.push_screen_wait(
                 FileOpen(
+                    Path(load_configuration().last_opened_guide_from),
                     filters=Filters(
                         ("Norton Guides", lambda p: p.suffix.lower() == ".ng")
-                    )
+                    ),
                 )
             )
         ) is not None:
             self.post_message(OpenGuide(guide))
+            with update_configuration() as config:
+                config.last_opened_guide_from = str(guide.parent)
 
     @on(SearchForGuide)
     def action_search_for_guide_command(self) -> None:
