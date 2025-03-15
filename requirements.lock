@@ -22,7 +22,7 @@ mdit-py-plugins==0.4.2
     # via markdown-it-py
 mdurl==0.1.2
     # via markdown-it-py
-ngdb==0.8.0
+ngdb==0.9.0
     # via aging
 platformdirs==4.3.6
     # via textual
