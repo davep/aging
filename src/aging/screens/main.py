@@ -302,7 +302,7 @@ class Main(EnhancedScreen[None]):
         for candidate in directory.glob("**/*.*"):
             if worker.is_cancelled:
                 return
-            if candidate.suffix.lower() == ".ng":
+            if NortonGuide.maybe(candidate):
                 with NortonGuide(candidate) as guide:
                     if guide.is_a:
                         guides.append(Guide(make_dos_like(guide.title), guide.path))
@@ -607,9 +607,7 @@ class Main(EnhancedScreen[None]):
             guide := await self.app.push_screen_wait(
                 FileOpen(
                     Path(load_configuration().last_opened_guide_from),
-                    filters=Filters(
-                        ("Norton Guides", lambda p: p.suffix.lower() == ".ng")
-                    ),
+                    filters=Filters(("Norton Guides", NortonGuide.maybe)),
                 )
             )
         ) is not None:
