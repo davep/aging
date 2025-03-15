@@ -18,6 +18,7 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
+from textual_enhanced.binding import HelpfulBinding
 from textual_enhanced.dialogs import Confirm, ModalInput
 from textual_enhanced.widgets import EnhancedOptionList
 
@@ -73,20 +74,26 @@ class GuideDirectory(EnhancedOptionList):
     """
 
     BINDINGS = [
-        Binding(
-            "r", "rename", "Rename", tooltip="Rename the title of the highlighted guide"
+        HelpfulBinding(
+            "r",
+            "rename",
+            "Rename",
+            tooltip="Rename the title of the highlighted guide",
+            show=False,
         ),
-        Binding(
+        HelpfulBinding(
             "delete",
             "remove",
             "Remove",
             tooltip="Remove the highlighted guide from the directory",
+            show=False,
         ),
-        Binding(
+        HelpfulBinding(
             "ctrl+delete",
             "remove_all",
             "Remove all",
             tooltip="Remove all guides from the directory",
+            show=False,
         ),
     ]
 
