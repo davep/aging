@@ -45,6 +45,7 @@ from ..commands import (
     CopyEntrySourceToClipboard,
     CopyEntryTextToClipboard,
     Escape,
+    GlobalSearch,
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
@@ -70,6 +71,7 @@ from ..messages import CopyToClipboard, GuidesUpdated, OpenEntry, OpenGuide
 from ..providers import GuidesCommands, MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 from .about import About
+from .search import Search
 
 
 ##############################################################################
@@ -130,6 +132,7 @@ class Main(EnhancedScreen[None]):
         CopyEntrySourceToClipboard,
         CopyEntryTextToClipboard,
         Escape,
+        GlobalSearch,
         JumpToMenu,
         ToggleClassicView,
         BrowseForGuide,
@@ -348,6 +351,8 @@ class Main(EnhancedScreen[None]):
             return bool(self.guides)
         if action == AboutTheGuide.action_name():
             return bool(self.guide) or None
+        if action == GlobalSearch.action_name():
+            return bool(self.guides)
         if action in (
             command.action_name()
             for command in (
@@ -657,6 +662,11 @@ class Main(EnhancedScreen[None]):
             self.post_message(SearchEntry())
             return
         self.query_one(EntryViewer).search_next()
+
+    @on(GlobalSearch)
+    def action_global_search_command(self) -> None:
+        """Perform a global search."""
+        self.app.push_screen(Search(self.guides, self.guide))
 
 
 ### main.py ends here

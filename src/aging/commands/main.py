@@ -107,4 +107,11 @@ class SearchEntryNextFind(Command):
     BINDING_KEY = "n"
 
 
+##############################################################################
+class GlobalSearch(Command):
+    """Search for text in this or other guides"""
+
+    BINDING_KEY = "ctrl+slash"
+
+
 ### main.py ends here
