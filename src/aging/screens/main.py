@@ -27,6 +27,7 @@ from textual.widgets import Footer, Header
 # Textual enhanced imports.
 from textual.worker import get_current_worker
 from textual_enhanced.commands import ChangeTheme, Command, Help, Quit
+from textual_enhanced.dialogs import ModalInput
 from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
@@ -50,6 +51,8 @@ from ..commands import (
     JumpToMenu,
     SaveEntrySource,
     SaveEntryText,
+    SearchEntry,
+    SearchEntryNextFind,
     SearchForGuide,
     SeeAlso,
     ToggleClassicView,
@@ -130,6 +133,8 @@ class Main(EnhancedScreen[None]):
         JumpToMenu,
         ToggleClassicView,
         BrowseForGuide,
+        SearchEntry,
+        SearchEntryNextFind,
         SearchForGuide,
         SaveEntrySource,
         SaveEntryText,
@@ -155,6 +160,9 @@ class Main(EnhancedScreen[None]):
 
     classic_view: var[bool] = var(False, init=False)
     """Should the entry viewer use a classic Norton Guide colour scheme?"""
+
+    _needle: var[str | None] = var(None)
+    """The text of any current entry search."""
 
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
@@ -347,6 +355,8 @@ class Main(EnhancedScreen[None]):
                 CopyEntrySourceToClipboard,
                 SaveEntryText,
                 SaveEntrySource,
+                SearchEntry,
+                SearchEntryNextFind,
             )
         ):
             return self.entry is not None
@@ -619,6 +629,34 @@ class Main(EnhancedScreen[None]):
     def action_search_for_guide_command(self) -> None:
         """Search the directory for a guide and view it."""
         self.show_palette(GuidesCommands)
+
+    @on(SearchEntry)
+    @work
+    async def action_search_entry_command(self) -> None:
+        """Search the current entry for some text."""
+        if self.entry is None:
+            return
+        if not (
+            needle := await self.app.push_screen_wait(
+                ModalInput("Search entry...", self._needle or "")
+            )
+        ):
+            return
+        if self._needle and self._needle.casefold() == needle.casefold():
+            self.query_one(EntryViewer).search_next()
+        else:
+            self._needle = needle
+            self.query_one(EntryViewer).start_search(self._needle)
+
+    @on(SearchEntryNextFind)
+    def action_search_entry_next_find_command(self) -> None:
+        """Continue any existing entry search."""
+        if self.entry is None:
+            return
+        if self._needle is None:
+            self.post_message(SearchEntry())
+            return
+        self.query_one(EntryViewer).search_next()
 
 
 ### main.py ends here

@@ -7,7 +7,7 @@ from typing import Final
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Link, Long, MarkupText, Short, make_dos_like
+from ngdb import Link, Long, MarkupText, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Rich imports.
@@ -232,12 +232,19 @@ class EntryContent(EnhancedOptionList):
     entry: var[Short | Long | None] = var(None)
     """The [entry][ngdb.Entry] being viewed, or [`None`][None] if no entry."""
 
+    _needle: var[str | None] = var(None)
+    """The needle for a search."""
+
+    _last_find: var[int | None] = var(None)
+    """The last line where something was found."""
+
     def _watch_classic_view(self) -> None:
         """Handle the classic view flag being changed."""
         self.set_class(self.classic_view, "--classic")
 
     def _watch_entry(self) -> None:
         """React to the entry being changed."""
+        self._last_find = None
         self.clear_options()
         if self.entry is not None:
             if isinstance(self.entry, Short):
@@ -331,6 +338,56 @@ class EntryContent(EnhancedOptionList):
                 if borrowed_style is not None and borrowed_style.meta:
                     strip = strip.apply_meta(borrowed_style.meta)
         return strip
+
+    def search_next(self) -> None:
+        """Search for the next occurrence of the current search string.
+
+        Note:
+            This method would seem to be a good candidate to turn into a
+            threaded worker, but given it's going to be searching a very
+            small amount of text, and given that we actually don't want the
+            user messing with the UI in the brief moment it's going to take
+            to find the next line, this is one time where I'm going to break
+            that obvious rule.
+        """
+        # Bail if there's nothing to search.
+        if self._needle is None or self.entry is None:
+            return
+        # Aim to start at the start if we've not done a search yet, or on
+        # the next line after the last search.
+        line = 0 if self._last_find is None else self._last_find + 1
+        # However... if the highlight has moved off the last line, we'll
+        # start where that is now. If the user has moved their focus it
+        # makes sense that they expect to start from the line they've
+        # highlighted.
+        if self.highlighted is not None and self.highlighted != line:
+            line = self.highlighted + 1
+        needle = self._needle.casefold()
+        while line < len(self.entry):
+            if (
+                needle
+                in str(
+                    PlainText(
+                        self.entry[line]
+                        if isinstance(self.entry, Long)
+                        else self.entry[line].text
+                    )
+                ).casefold()
+            ):
+                self.highlighted = self._last_find = line
+                return
+            line += 1
+        self.notify(f"'{self._needle}' not found", severity="warning")
+
+    def start_search(self, needle: str) -> None:
+        """Start a search in the entry.
+
+        Args:
+            needle: The text to search for.
+        """
+        self._needle = needle
+        self._last_find = None
+        self.search_next()
 
 
 ### entry_content.py ends here

@@ -1,5 +1,11 @@
 # Aging ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added the ability to search for text within the current entry.
+
 ## v0.2.0
 
 **Released: 2025-03-14**
