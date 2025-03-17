@@ -219,7 +219,7 @@ class Search(ModalScreen[None]):
             self.query_one("#guide_progress", ProgressBar).progress = total
 
     def _search_guide(
-        self, guide: Guide, worker: Worker, needle: str, ignore_case: bool
+        self, guide: Guide, worker: Worker[None], needle: str, ignore_case: bool
     ) -> None:
         """Search within the given guide.
 
