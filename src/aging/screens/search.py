@@ -15,6 +15,7 @@ from textual import on, work
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup, VerticalGroup
 from textual.message import Message
+from textual.reactive import var
 from textual.screen import ModalScreen
 from textual.widgets import Button, Checkbox, Input, Label, ProgressBar
 from textual.worker import Worker, get_current_worker
@@ -68,6 +69,9 @@ class Search(ModalScreen[None]):
 
     BINDINGS = [("escape", "dismiss(None)")]
 
+    _search_running: var[bool] = var(False)
+    """Are we searching?"""
+
     def __init__(self, guides: Guides, guide: NortonGuide | None) -> None:
         """Initialise the search screen.
 
@@ -97,6 +101,12 @@ class Search(ModalScreen[None]):
             yield ProgressBar(id="guides_progress", classes="--when-running")
             yield Label(id="current_entry", classes="--when-running", markup=False)
             yield ProgressBar(id="guide_progress", classes="--when-running")
+
+    def _watch__search_running(self) -> None:
+        """React to the searching state changing."""
+        self.set_class(self._search_running, "--running")
+        for widget in self.query("Input, Checkbox"):
+            widget.disabled = self._search_running
 
     @dataclass
     class Started(Message):
@@ -139,18 +149,14 @@ class Search(ModalScreen[None]):
         Args:
             starting: The message that signals that a search has started.
         """
-        for widget in self.query("Input, Checkbox"):
-            widget.disabled = True
-        self.set_class(True, "--running")
+        self._search_running = True
         self.query_one("#guides_progress", ProgressBar).total = starting.searching
 
     @on(Ended)
     @on(Cancelled)
     def _search_ended(self) -> None:
-        for widget in self.query("Input, Checkbox"):
-            widget.disabled = False
-        self.set_class(False, "--running")
         """Handle the search ending."""
+        self._search_running = False
 
     @on(NewGuide)
     def _update_current_guide(self, current: NewGuide) -> None:
