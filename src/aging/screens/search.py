@@ -10,6 +10,10 @@ from typing import Iterator, NamedTuple
 from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
+# Rich imports.
+from rich.text import Text
+
+##############################################################################
 # Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
@@ -17,7 +21,16 @@ from textual.containers import HorizontalGroup, VerticalGroup
 from textual.message import Message
 from textual.reactive import var
 from textual.screen import ModalScreen
-from textual.widgets import Button, Checkbox, Input, Label, ProgressBar, Rule
+from textual.widgets import (
+    Button,
+    Checkbox,
+    Input,
+    Label,
+    OptionList,
+    ProgressBar,
+    Rule,
+)
+from textual.widgets.option_list import Option
 from textual.worker import Worker, get_current_worker
 
 ##############################################################################
@@ -28,6 +41,31 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 # Local imports.
 from ..data import Guide, Guides, SearchHit, SearchHits
+from ..widgets.entry_viewer.entry_content import TextualText
+
+
+##############################################################################
+class ResultView(Option):
+    """Class for viewing a particular result."""
+
+    def __init__(self, result: SearchHit) -> None:
+        """Initialise the object.
+
+        Args:
+            result: The result to view.
+        """
+        self._result = result
+        """The result we're viewing."""
+        super().__init__(
+            prompt := Text.from_markup(f"[dim italic]{result.guide.name:<12}[/] ")
+            + TextualText(result.line_source).as_rich_text
+        )
+        prompt.no_wrap = True
+
+    @property
+    def result(self) -> SearchHit:
+        """The search result."""
+        return self._result
 
 
 ##############################################################################
@@ -57,9 +95,34 @@ class SearchResults(EnhancedOptionList):
         """
         self.disabled = False
         with self.preserved_highlight:
-            self.add_option(
-                make_dos_like(f"{result.guide.name} - {PlainText(result.line_source)}")
-            )
+            self.add_option(ResultView(result))
+
+    def add_results(self, results: SearchHits) -> None:
+        """Add a collection of results to the display.
+
+        Args:
+            results: The results to add.
+        """
+        with self.preserved_highlight:
+            self.add_options(ResultView(result) for result in results)
+        self.disabled = not bool(self.option_count)
+
+    @dataclass
+    class JumpToResult(Message):
+        """A message sent when the user wants to jump to a search hit."""
+
+        hit: SearchHit
+        """The hit to jump to."""
+
+    @on(OptionList.OptionSelected)
+    def _jump_to_result(self, message: OptionList.OptionSelected) -> None:
+        """Process a request to jump to a result.
+
+        Args:
+            message: The message requesting we jump to a result.
+        """
+        assert isinstance(message.option, ResultView)
+        self.post_message(self.JumpToResult(message.option.result))
 
 
 ##############################################################################
@@ -123,7 +186,12 @@ class Search(ModalScreen[SearchResult]):
     _search_running: var[bool] = var(False)
     """Are we searching?"""
 
-    def __init__(self, guides: Guides, guide: NortonGuide | None) -> None:
+    def __init__(
+        self,
+        guides: Guides,
+        guide: NortonGuide | None,
+        search_hits: SearchHits | None = None,
+    ) -> None:
         """Initialise the search screen.
 
         Args:
@@ -134,7 +202,7 @@ class Search(ModalScreen[SearchResult]):
         """All the guides known to the application."""
         self._guide = guide
         """The current guide, if here is one."""
-        self._search_hits = SearchHits()
+        self._search_hits = search_hits or SearchHits()
         """The search hits."""
         super().__init__()
 
@@ -156,7 +224,11 @@ class Search(ModalScreen[SearchResult]):
             yield Label(id="current_entry", classes="--when-running", markup=False)
             yield ProgressBar(id="guide_progress", classes="--when-running")
             yield Rule()
-            yield SearchResults(disabled=True, markup=False)
+            yield SearchResults(disabled=True)
+
+    def on_mount(self) -> None:
+        """Configure the screen once the DOM is mounted."""
+        self.query_one(SearchResults).add_results(self._search_hits)
 
     def _watch__search_running(self) -> None:
         """React to the searching state changing."""
@@ -415,6 +487,15 @@ class Search(ModalScreen[SearchResult]):
         ):
             return
         self.dismiss(SearchResult(self._search_hits))
+
+    @on(SearchResults.JumpToResult)
+    def _jump_to_result(self, message: SearchResults.JumpToResult) -> None:
+        """Close the search dialog and request a jump to a hit.
+
+        Args:
+            message: The message requesting we jump to a hit.
+        """
+        self.dismiss(SearchResult(self._search_hits, message.hit))
 
 
 ### search.py ends here

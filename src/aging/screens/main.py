@@ -62,6 +62,7 @@ from ..commands import (
 from ..data import (
     Guide,
     Guides,
+    SearchHits,
     load_configuration,
     load_guides,
     save_guides,
@@ -175,6 +176,8 @@ class Main(EnhancedScreen[None]):
         """
         self._arguments = arguments
         """The arguments passed on the command line."""
+        self._search_hits = SearchHits()
+        """Keeps track of the last search hits."""
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -412,17 +415,17 @@ class Main(EnhancedScreen[None]):
         if self.guide is not None:
             self.guide.close()
 
-        # If we're being asked to jump to a specific entry, to start with,
-        # make sure we're there...
-        if message.initial_offset is not None:
-            new_guide.goto(message.initial_offset)
-
         # Looks good.
         self.guide = new_guide
 
         # Having opening the guide, the user probably wants to be in the
         # menu.
         self.query_one(GuideMenu).focus()
+
+        # If we're being asked to jump to a specific entry, to start with,
+        # make sure we're there...
+        if message.initial_offset is not None:
+            self.post_message(OpenEntry(message.initial_offset, message.initial_line))
 
     @on(OpenEntry)
     def _open_entry(self, message: OpenEntry) -> None:
@@ -667,11 +670,16 @@ class Main(EnhancedScreen[None]):
     @work
     async def action_global_search_command(self) -> None:
         """Perform a global search."""
-        if (
-            result := await self.app.push_screen_wait(Search(self.guides, self.guide))
-        ).goto is not None:
-            self.notify(f"TODO: Goto {result.goto!r}")
-        self.notify(f"Hits to remember {len(result.hits)}")
+        result = await self.app.push_screen_wait(
+            Search(self.guides, self.guide, self._search_hits)
+        )
+        if result.goto is not None:
+            self.post_message(
+                OpenGuide(
+                    result.goto.guide, result.goto.entry_offset, result.goto.entry_line
+                )
+            )
+        self._search_hits = result.hits
 
 
 ### main.py ends here

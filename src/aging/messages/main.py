@@ -21,6 +21,9 @@ class OpenGuide(Message):
     initial_offset: int | None = None
     """The optional offset of an entry to open once the guide is opened."""
 
+    initial_line: int | None = None
+    """The optional line to highlight once the guide and entry are opened."""
+
 
 ##############################################################################
 @dataclass
