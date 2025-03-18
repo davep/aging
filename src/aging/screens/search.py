@@ -283,7 +283,9 @@ class Search(ModalScreen[None]):
             if worker.is_cancelled:
                 return
             haystack = found_line = str(
-                PlainText(line.text if isinstance(line, Link) else line)
+                # Note str of what is a string in the else here, becuase
+                # mypy gets very confused by this (but pyright is fine).
+                PlainText(line.text if isinstance(line, Link) else str(line))
             )
             if ignore_case:
                 haystack = haystack.casefold()
