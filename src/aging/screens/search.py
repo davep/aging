@@ -206,16 +206,10 @@ class Search(ModalScreen[None]):
         Args:
             current: The message that signals a new entry is being searched.
         """
-        try:
-            self.query_one("#current_entry", Label).update(
-                " » ".join(self._entry_description(current.guide, current.entry))
-            )
-            self.query_one(
-                "#guide_progress", ProgressBar
-            ).progress = current.entry.offset
-        except ValueError:
-            # TODO: REMOVE!
-            self.notify("Value error found")
+        self.query_one("#current_entry", Label).update(
+            " » ".join(self._entry_description(current.guide, current.entry))
+        )
+        self.query_one("#guide_progress", ProgressBar).progress = current.entry.offset
 
     @on(FinishedGuide)
     def _finished_guide(self) -> None:
@@ -246,9 +240,6 @@ class Search(ModalScreen[None]):
             self.notify(
                 str(error), title=f"Failed to search {guide.location}", severity="error"
             )
-        except IndexError:
-            # TODO: REMOVE!
-            self.notify("Index error found")
 
     @work(thread=True, exclusive=True, group="search")
     def _search(self, guides: Guides, needle: str, ignore_case: bool) -> None:
