@@ -360,6 +360,7 @@ class Search(ModalScreen[None]):
                 )
                 return
             guides = [Guide(self._guide.title, self._guide.path)]
+        self.query_one(SearchResults).clear_options()
         self._search(
             guides,
             self.query_one(Input).value,
