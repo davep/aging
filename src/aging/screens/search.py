@@ -3,7 +3,7 @@
 ##############################################################################
 # NGDB imports.
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, NamedTuple
 
 ##############################################################################
 # NGDB imports
@@ -22,11 +22,12 @@ from textual.worker import Worker, get_current_worker
 
 ##############################################################################
 # Textual enhanced imports.
+from textual_enhanced.dialogs import Confirm
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
 # Local imports.
-from ..data.guides import Guide, Guides
+from ..data import Guide, Guides, SearchHit, SearchHits
 
 
 ##############################################################################
@@ -43,9 +44,36 @@ class SearchResults(EnhancedOptionList):
     }
     """
 
+    def clear_results(self) -> None:
+        """Clear all the results."""
+        self.clear_options()
+        self.disabled = True
+
+    def add_result(self, result: SearchHit) -> None:
+        """Add a result to the display.
+
+        Args:
+            result: The result to add.
+        """
+        self.disabled = False
+        with self.preserved_highlight:
+            self.add_option(
+                make_dos_like(f"{result.guide.name} - {PlainText(result.line_source)}")
+            )
+
 
 ##############################################################################
-class Search(ModalScreen[None]):
+class SearchResult(NamedTuple):
+    """The result from calling the search screen."""
+
+    hits: SearchHits
+    """The results that the result comes from."""
+    goto: SearchHit | None = None
+    """The search hit that the user wants to go to."""
+
+
+##############################################################################
+class Search(ModalScreen[SearchResult]):
     """Provides the global search screen."""
 
     DEFAULT_CSS = """
@@ -90,7 +118,7 @@ class Search(ModalScreen[None]):
     }
     """
 
-    BINDINGS = [("escape", "dismiss(None)")]
+    BINDINGS = [("escape", "escape")]
 
     _search_running: var[bool] = var(False)
     """Are we searching?"""
@@ -106,6 +134,8 @@ class Search(ModalScreen[None]):
         """All the guides known to the application."""
         self._guide = guide
         """The current guide, if here is one."""
+        self._search_hits = SearchHits()
+        """The search hits."""
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -257,11 +287,15 @@ class Search(ModalScreen[None]):
         Args:
             match: The message that signals a match was found.
         """
-        (hits := self.query_one(SearchResults)).disabled = False
-        with hits.preserved_highlight:
-            hits.add_option(
-                make_dos_like(f"{match.guide.path.name} - {match.found_line}")
+        self._search_hits.append(
+            SearchHit(
+                match.guide.path,
+                match.entry.offset,
+                match.line_number,
+                match.found_line,
             )
+        )
+        self.query_one(SearchResults).add_result(self._search_hits[-1])
 
     @on(FinishedGuide)
     def _finished_guide(self) -> None:
@@ -290,11 +324,11 @@ class Search(ModalScreen[None]):
         for line_number, line in enumerate(entry):
             if worker.is_cancelled:
                 return
-            haystack = found_line = str(PlainText(str(line)))
+            haystack = str(PlainText(str(line)))
             if ignore_case:
                 haystack = haystack.casefold()
             if needle in haystack:
-                self.post_message(self.NewMatch(guide, entry, line_number, found_line))
+                self.post_message(self.NewMatch(guide, entry, line_number, str(line)))
 
     def _search_guide(
         self, guide: Guide, worker: Worker[None], needle: str, ignore_case: bool
@@ -360,7 +394,8 @@ class Search(ModalScreen[None]):
                 )
                 return
             guides = [Guide(self._guide.title, self._guide.path)]
-        self.query_one(SearchResults).clear_options()
+        self._search_hits = []
+        self.query_one(SearchResults).clear_results()
         self._search(
             guides,
             self.query_one(Input).value,
@@ -371,6 +406,15 @@ class Search(ModalScreen[None]):
     def stop_search(self) -> None:
         """Stop the search."""
         self.app.workers.cancel_group(self, "search")
+
+    @work
+    async def action_escape(self) -> None:
+        """Handle a request to escape."""
+        if self._search_running and not await self.app.push_screen_wait(
+            Confirm("Cancel", "Are you sure you want to cancel the current search?")
+        ):
+            return
+        self.dismiss(SearchResult(self._search_hits))
 
 
 ### search.py ends here

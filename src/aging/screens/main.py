@@ -664,9 +664,14 @@ class Main(EnhancedScreen[None]):
         self.query_one(EntryViewer).search_next()
 
     @on(GlobalSearch)
-    def action_global_search_command(self) -> None:
+    @work
+    async def action_global_search_command(self) -> None:
         """Perform a global search."""
-        self.app.push_screen(Search(self.guides, self.guide))
+        if (
+            result := await self.app.push_screen_wait(Search(self.guides, self.guide))
+        ).goto is not None:
+            self.notify(f"TODO: Goto {result.goto!r}")
+        self.notify(f"Hits to remember {len(result.hits)}")
 
 
 ### main.py ends here
