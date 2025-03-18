@@ -12,7 +12,7 @@
 -e file:.
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.11.13
+aiohttp==3.11.14
     # via aiohttp-jinja2
     # via textual-dev
     # via textual-serve
@@ -56,13 +56,13 @@ mdurl==0.1.2
     # via markdown-it-py
 msgpack==1.1.0
     # via textual-dev
-multidict==6.1.0
+multidict==6.2.0
     # via aiohttp
     # via yarl
 mypy==1.15.0
 mypy-extensions==1.0.0
     # via mypy
-ngdb==0.9.0
+ngdb==0.10.0
     # via aging
 nodeenv==1.9.1
     # via pre-commit
