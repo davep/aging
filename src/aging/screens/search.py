@@ -7,7 +7,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports
-from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
+from ngdb import Link, Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Textual imports.
@@ -21,8 +21,27 @@ from textual.widgets import Button, Checkbox, Input, Label, ProgressBar
 from textual.worker import Worker, get_current_worker
 
 ##############################################################################
+# Textual enhanced imports.
+from textual_enhanced.widgets import EnhancedOptionList
+
+##############################################################################
 # Local imports.
 from ..data.guides import Guide, Guides
+
+
+##############################################################################
+class SearchResults(EnhancedOptionList):
+    """A widget that shows the search results."""
+
+    DEFAULT_CSS = """
+    SearchResults {
+        height: 1fr;
+        &, &:focus {
+            background: transparent;
+            border: none;
+        }
+    }
+    """
 
 
 ##############################################################################
@@ -101,6 +120,7 @@ class Search(ModalScreen[None]):
             yield ProgressBar(id="guides_progress", classes="--when-running")
             yield Label(id="current_entry", classes="--when-running", markup=False)
             yield ProgressBar(id="guide_progress", classes="--when-running")
+            yield SearchResults(disabled=True, markup=False)
 
     def _watch__search_running(self) -> None:
         """React to the searching state changing."""
@@ -138,6 +158,17 @@ class Search(ModalScreen[None]):
         """The guide being searched."""
         entry: Short | Long
         """The entry being searched."""
+
+    @dataclass
+    class NewMatch(Message):
+        guide: NortonGuide
+        """The guide being searched."""
+        entry: Short | Long
+        """The entry being searched."""
+        line_number: int
+        """The number of the line where the match was found."""
+        found_line: str
+        """The text of the line that the match was found in."""
 
     class FinishedGuide(Message):
         """Message sent when we've finished searching a guide."""
@@ -211,12 +242,53 @@ class Search(ModalScreen[None]):
         )
         self.query_one("#guide_progress", ProgressBar).progress = current.entry.offset
 
+    @on(NewMatch)
+    def _new_match_found(self, match: NewMatch) -> None:
+        """Handle a new match being found.
+
+        Args:
+            match: The message that signals a match was found.
+        """
+        (hits := self.query_one(SearchResults)).disabled = False
+        with hits.preserved_highlight:
+            hits.add_option(
+                make_dos_like(f"{match.guide.path.name} - {match.found_line}")
+            )
+
     @on(FinishedGuide)
     def _finished_guide(self) -> None:
         """Handle a guide search finishing."""
         self.query_one("#current_entry", Label).update("Finished")
         if (total := self.query_one("#guide_progress", ProgressBar).total) is not None:
             self.query_one("#guide_progress", ProgressBar).progress = total
+
+    def _search_entry(
+        self,
+        guide: NortonGuide,
+        entry: Long | Short,
+        worker: Worker[None],
+        needle: str,
+        ignore_case: bool,
+    ) -> None:
+        """Search within an entry.
+
+        Args:
+            entry: The entry to search.
+            worker: The worker that we're working within.
+            needle: The text to search for.
+            ignore_case: Should case be ignored?
+        """
+        self.post_message(self.NewEntry(guide, entry))
+        for line_number, line in enumerate(entry):
+            if worker.is_cancelled:
+                return
+            haystack = found_line = str(
+                PlainText(line.text if isinstance(line, Link) else line)
+            )
+            if ignore_case:
+                haystack = haystack.casefold()
+            if needle in haystack:
+                self.post_message(self.NewMatch(guide, entry, line_number, found_line))
 
     def _search_guide(
         self, guide: Guide, worker: Worker[None], needle: str, ignore_case: bool
@@ -234,7 +306,7 @@ class Search(ModalScreen[None]):
                 for entry in search:
                     if worker.is_cancelled:
                         return
-                    self.post_message(self.NewEntry(search, entry))
+                    self._search_entry(search, entry, worker, needle, ignore_case)
             self.post_message(self.FinishedGuide())
         except (IOError, NGDBError) as error:
             self.notify(
