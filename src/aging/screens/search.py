@@ -17,7 +17,7 @@ from textual.containers import HorizontalGroup, VerticalGroup
 from textual.message import Message
 from textual.reactive import var
 from textual.screen import ModalScreen
-from textual.widgets import Button, Checkbox, Input, Label, ProgressBar
+from textual.widgets import Button, Checkbox, Input, Label, ProgressBar, Rule
 from textual.worker import Worker, get_current_worker
 
 ##############################################################################
@@ -63,6 +63,10 @@ class Search(ModalScreen[None]):
                     width: 1fr;
                 }
             }
+        }
+
+        Rule {
+            margin: 0 !important;
         }
 
         ProgressBar Bar {
@@ -116,10 +120,12 @@ class Search(ModalScreen[None]):
                 yield Button(
                     "Stop", variant="error", id="stop", classes="--when-running"
                 )
+            yield Rule(classes="--when-running")
             yield Label(id="current_guide", classes="--when-running", markup=False)
             yield ProgressBar(id="guides_progress", classes="--when-running")
             yield Label(id="current_entry", classes="--when-running", markup=False)
             yield ProgressBar(id="guide_progress", classes="--when-running")
+            yield Rule()
             yield SearchResults(disabled=True, markup=False)
 
     def _watch__search_running(self) -> None:
