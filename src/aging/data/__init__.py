@@ -9,6 +9,7 @@ from .config import (
     update_configuration,
 )
 from .guides import Guide, Guides, load_guides, save_guides
+from .search_hits import SearchHit, SearchHits
 
 ##############################################################################
 # Exports.
@@ -16,6 +17,8 @@ __all__ = [
     "Configuration",
     "Guide",
     "Guides",
+    "SearchHit",
+    "SearchHits",
     "load_configuration",
     "load_guides",
     "save_configuration",
