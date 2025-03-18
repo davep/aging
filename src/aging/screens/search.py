@@ -7,7 +7,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports
-from ngdb import Link, Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
+from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Textual imports.
@@ -282,11 +282,7 @@ class Search(ModalScreen[None]):
         for line_number, line in enumerate(entry):
             if worker.is_cancelled:
                 return
-            haystack = found_line = str(
-                # Note str of what is a string in the else here, becuase
-                # mypy gets very confused by this (but pyright is fine).
-                PlainText(line.text if isinstance(line, Link) else str(line))
-            )
+            haystack = found_line = str(PlainText(str(line)))
             if ignore_case:
                 haystack = haystack.casefold()
             if needle in haystack:
