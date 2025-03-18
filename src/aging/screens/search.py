@@ -161,6 +161,8 @@ class Search(ModalScreen[None]):
 
     @dataclass
     class NewMatch(Message):
+        """Message sent when a new match is found in a guide entry."""
+
         guide: NortonGuide
         """The guide being searched."""
         entry: Short | Long
