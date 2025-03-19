@@ -35,7 +35,7 @@ from textual.widgets import (
     ProgressBar,
     Rule,
 )
-from textual.widgets.option_list import Option
+from textual.widgets.option_list import Option, OptionDoesNotExist
 from textual.worker import Worker, get_current_worker
 
 ##############################################################################
@@ -63,7 +63,8 @@ class ResultView(Option):
         """The result we're viewing."""
         super().__init__(
             prompt := Text.from_markup(f"[dim italic]{result.guide.name:<12}[/] ")
-            + TextualText(result.line_source).as_rich_text
+            + TextualText(result.line_source).as_rich_text,
+            id=result.identity,
         )
         prompt.no_wrap = True
 
@@ -231,6 +232,7 @@ class Search(ModalScreen[SearchResult]):
         guides: Guides,
         guide: NortonGuide | None,
         search_hits: SearchHits | None = None,
+        last_visited: SearchHit | None = None,
     ) -> None:
         """Initialise the search screen.
 
@@ -244,6 +246,8 @@ class Search(ModalScreen[SearchResult]):
         """The current guide, if here is one."""
         self._search_hits = search_hits or SearchHits()
         """The search hits."""
+        self._last_visited = last_visited
+        """The search hit that was last visited."""
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -274,7 +278,15 @@ class Search(ModalScreen[SearchResult]):
 
     def on_mount(self) -> None:
         """Configure the screen once the DOM is mounted."""
-        self.query_one(SearchResults).add_results(self._search_hits)
+        (results := self.query_one(SearchResults)).add_results(self._search_hits)
+        if self._last_visited is not None:
+            try:
+                results.highlighted = results.get_option_index(
+                    self._last_visited.identity
+                )
+            except OptionDoesNotExist:
+                return
+            results.focus()
 
     def _watch__search_running(self) -> None:
         """React to the searching state changing."""

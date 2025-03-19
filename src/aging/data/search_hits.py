@@ -19,6 +19,11 @@ class SearchHit(NamedTuple):
     line_source: str
     """The guide source for the line in which the hit was found."""
 
+    @property
+    def identity(self) -> str:
+        """The unique identity for the search hit."""
+        return f"{self.guide}-{self.entry_offset}-{self.entry_line}"
+
 
 ##############################################################################
 SearchHits: TypeAlias = list[SearchHit]

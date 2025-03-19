@@ -62,6 +62,7 @@ from ..commands import (
 from ..data import (
     Guide,
     Guides,
+    SearchHit,
     SearchHits,
     load_configuration,
     load_guides,
@@ -178,6 +179,8 @@ class Main(EnhancedScreen[None]):
         """The arguments passed on the command line."""
         self._search_hits = SearchHits()
         """Keeps track of the last search hits."""
+        self._last_search_hit_visited: SearchHit | None = None
+        """The last search hit that was visited."""
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -671,15 +674,21 @@ class Main(EnhancedScreen[None]):
     async def action_global_search_command(self) -> None:
         """Perform a global search."""
         result = await self.app.push_screen_wait(
-            Search(self.guides, self.guide, self._search_hits)
+            Search(
+                self.guides,
+                self.guide,
+                self._search_hits,
+                self._last_search_hit_visited,
+            )
         )
+        self._search_hits = result.hits
+        self._last_search_hit_visited = result.goto
         if result.goto is not None:
             self.post_message(
                 OpenGuide(
                     result.goto.guide, result.goto.entry_offset, result.goto.entry_line
                 )
             )
-        self._search_hits = result.hits
 
 
 ### main.py ends here
