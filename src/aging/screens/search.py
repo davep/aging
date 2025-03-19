@@ -6,6 +6,10 @@ from dataclasses import dataclass
 from typing import Iterator, NamedTuple
 
 ##############################################################################
+# Humanize imports.
+from humanize import intcomma
+
+##############################################################################
 # NGDB imports
 from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
@@ -16,11 +20,12 @@ from rich.text import Text
 ##############################################################################
 # Textual imports.
 from textual import on, work
-from textual.app import ComposeResult
+from textual.app import ComposeResult, RenderResult
 from textual.containers import HorizontalGroup, VerticalGroup
 from textual.message import Message
-from textual.reactive import var
+from textual.reactive import reactive, var
 from textual.screen import ModalScreen
+from textual.widget import Widget
 from textual.widgets import (
     Button,
     Checkbox,
@@ -136,6 +141,41 @@ class SearchResult(NamedTuple):
 
 
 ##############################################################################
+class Counter(Widget):
+    """A counter widget."""
+
+    DEFAULT_CSS = """
+    Counter {
+        width: 1fr;
+        height: 1;
+        margin-right: 1;
+        content-align: center middle;
+    }
+    """
+
+    count: reactive[int] = reactive(0)
+    """The count."""
+
+    def __init__(self, id: str) -> None:
+        """Initialise the widget.
+
+        Args:
+            id: The ID for the widget.
+        """
+        super().__init__(id=id)
+        self._title = id.title()
+        """The title to show for the counter."""
+
+    def render(self) -> RenderResult:
+        """Render the content of the counter.
+
+        Returns:
+            A renderable value.
+        """
+        return f"[$accent]{self._title}:[/] [dim]{intcomma(self.count)}[/]"
+
+
+##############################################################################
 class Search(ModalScreen[SearchResult]):
     """Provides the global search screen."""
 
@@ -219,6 +259,12 @@ class Search(ModalScreen[SearchResult]):
                     "Stop", variant="error", id="stop", classes="--when-running"
                 )
             yield Rule(classes="--when-running")
+            with HorizontalGroup(classes="--when-running"):
+                yield Counter(id="guides")
+                yield Counter(id="entries")
+                yield Counter(id="lines")
+                yield Counter(id="hits")
+            yield Rule(classes="--when-running")
             yield Label(id="current_guide", classes="--when-running", markup=False)
             yield ProgressBar(id="guides_progress", classes="--when-running")
             yield Label(id="current_entry", classes="--when-running", markup=False)
@@ -253,8 +299,6 @@ class Search(ModalScreen[SearchResult]):
     class NewGuide(Message):
         """Message sent when a new guide is being searched."""
 
-        position: int
-        """The position of the guide in the list of guides to search."""
         guide: Guide
         """The information about the guide being searched."""
 
@@ -266,6 +310,13 @@ class Search(ModalScreen[SearchResult]):
         """The guide being searched."""
         entry: Short | Long
         """The entry being searched."""
+
+    @dataclass
+    class FinishedEntry(Message):
+        """Message sent when an entry has been searched."""
+
+        entry: Short | Long
+        """The entry that was searched."""
 
     @dataclass
     class NewMatch(Message):
@@ -306,10 +357,11 @@ class Search(ModalScreen[SearchResult]):
         Args:
             current: The message that signals that a new guide is being searched.
         """
+        self.query_one("#guides", Counter).count += 1
         self.query_one("#current_guide", Label).update(
             f"Searching {current.guide.title}"
         )
-        self.query_one("#guides_progress", ProgressBar).progress = current.position
+        self.query_one("#guides_progress", ProgressBar).progress += 1
         self.query_one(
             "#guide_progress", ProgressBar
         ).total = current.guide.location.stat().st_size
@@ -326,7 +378,6 @@ class Search(ModalScreen[SearchResult]):
         Yields:
             Parts of a description for the entry.
         """
-        yield entry.__class__.__name__
         if entry.parent.has_menu:
             yield make_dos_like(guide.menus[entry.parent.menu].title)
         if entry.parent.has_prompt:
@@ -347,10 +398,20 @@ class Search(ModalScreen[SearchResult]):
         Args:
             current: The message that signals a new entry is being searched.
         """
+        self.query_one("#entries", Counter).count += 1
         self.query_one("#current_entry", Label).update(
             " » ".join(self._entry_description(current.guide, current.entry))
         )
         self.query_one("#guide_progress", ProgressBar).progress = current.entry.offset
+
+    @on(FinishedEntry)
+    def _update_after_entry_searched(self, finished: FinishedEntry) -> None:
+        """Handle the search of an entry finishing.
+
+        Args:
+            finished: The message that signals an entry has been searched.
+        """
+        self.query_one("#lines", Counter).count += len(finished.entry)
 
     @on(NewMatch)
     def _new_match_found(self, match: NewMatch) -> None:
@@ -359,6 +420,7 @@ class Search(ModalScreen[SearchResult]):
         Args:
             match: The message that signals a match was found.
         """
+        self.query_one("#hits", Counter).count += 1
         self._search_hits.append(
             SearchHit(
                 match.guide.path,
@@ -401,6 +463,7 @@ class Search(ModalScreen[SearchResult]):
                 haystack = haystack.casefold()
             if needle in haystack:
                 self.post_message(self.NewMatch(guide, entry, line_number, str(line)))
+        self.post_message(self.FinishedEntry(entry))
 
     def _search_guide(
         self, guide: Guide, worker: Worker[None], needle: str, ignore_case: bool
@@ -436,12 +499,15 @@ class Search(ModalScreen[SearchResult]):
         """
         worker = get_current_worker()
         needle = needle.casefold() if ignore_case else needle
+        self.query_one("#guides_progress", ProgressBar).progress = 0
+        for counter in self.query(Counter):
+            counter.count = 0
         self.post_message(self.Started(len(guides)))
-        for position, guide in enumerate(sorted(guides)):
+        for guide in sorted(guides):
             if worker.is_cancelled:
                 self.post_message(self.Cancelled())
                 return
-            self.post_message(self.NewGuide(position + 1, guide))
+            self.post_message(self.NewGuide(guide))
             self._search_guide(guide, worker, needle, ignore_case)
         self.post_message(self.Ended())
 
