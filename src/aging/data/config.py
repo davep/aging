@@ -43,6 +43,15 @@ class Configuration:
     last_opened_guide_from: str = "."
     """The location the user last browsed for an individual guide from."""
 
+    global_search_text: str = ""
+    """The text that was last searched for in global search."""
+
+    global_search_all_guides: bool = True
+    """The last state of the all guides checkbox in global search."""
+
+    global_search_ignore_case: bool = True
+    """The last state of the ignore case setting."""
+
 
 ##############################################################################
 def configuration_file() -> Path:

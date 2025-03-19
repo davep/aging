@@ -45,7 +45,14 @@ from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
 # Local imports.
-from ..data import Guide, Guides, SearchHit, SearchHits
+from ..data import (
+    Guide,
+    Guides,
+    SearchHit,
+    SearchHits,
+    load_configuration,
+    update_configuration,
+)
 from ..widgets.entry_viewer.entry_content import TextualText
 
 
@@ -252,12 +259,17 @@ class Search(ModalScreen[SearchResult]):
 
     def compose(self) -> ComposeResult:
         """Compose the content of the screen."""
+        config = load_configuration()
         with VerticalGroup() as dialog:
             dialog.border_title = "Global Search"
             with HorizontalGroup():
-                yield Input(placeholder="Search...")
-                yield Checkbox("Global", True, id="global")
-                yield Checkbox("Ignore Case", True, id="ignore_case")
+                yield Input(config.global_search_text, placeholder="Search...")
+                yield Checkbox(
+                    "All Guides", config.global_search_all_guides, id="all_guides"
+                )
+                yield Checkbox(
+                    "Ignore Case", config.global_search_ignore_case, id="ignore_case"
+                )
                 yield Button("Go", variant="primary", id="go", classes="--when-stopped")
                 yield Button(
                     "Stop", variant="error", id="stop", classes="--when-running"
@@ -527,7 +539,17 @@ class Search(ModalScreen[SearchResult]):
     @on(Button.Pressed, "#go")
     def search(self) -> None:
         """React to a request to start a search."""
-        if not self.query_one(Input).value.strip():
+        with update_configuration() as config:
+            search_text = config.global_search_text = self.query_one(
+                Input
+            ).value.strip()
+            all_guides = config.global_search_all_guides = self.query_one(
+                "#all_guides", Checkbox
+            ).value
+            ignore_case = config.global_search_ignore_case = self.query_one(
+                "#ignore_case", Checkbox
+            ).value
+        if not search_text:
             self.notify(
                 "Please provide something to search for",
                 title="No search text",
@@ -535,10 +557,10 @@ class Search(ModalScreen[SearchResult]):
             )
             return
         guides = self._guides
-        if not self.query_one("#global", Checkbox).value:
+        if not all_guides:
             if self._guide is None:
                 self.notify(
-                    "Unable to perform a non-global search when no guide is open",
+                    "There is no guide open to search.",
                     title="Can't search",
                     severity="error",
                 )
@@ -548,8 +570,8 @@ class Search(ModalScreen[SearchResult]):
         self.query_one(SearchResults).clear_results()
         self._search(
             guides,
-            self.query_one(Input).value,
-            self.query_one("#ignore_case", Checkbox).value,
+            search_text,
+            ignore_case,
         )
 
     @on(Button.Pressed, "#stop")
