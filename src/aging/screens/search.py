@@ -594,18 +594,29 @@ class Search(ModalScreen[SearchResult]):
     async def action_escape(self) -> None:
         """Handle a request to escape."""
         if self._search_running and not await self.app.push_screen_wait(
-            Confirm("Cancel", "Are you sure you want to cancel the current search?")
+            Confirm(
+                "Exit search",
+                "Existing now will stop the current search, are you sure?",
+            )
         ):
             return
         self.dismiss(SearchResult(self._search_hits))
 
     @on(SearchResults.JumpToResult)
-    def _jump_to_result(self, message: SearchResults.JumpToResult) -> None:
+    @work
+    async def _jump_to_result(self, message: SearchResults.JumpToResult) -> None:
         """Close the search dialog and request a jump to a hit.
 
         Args:
             message: The message requesting we jump to a hit.
         """
+        if self._search_running and not await self.app.push_screen_wait(
+            Confirm(
+                "Search still in progress",
+                "Visiting this result will stop the current search, are you sure?",
+            )
+        ):
+            return
         self.dismiss(SearchResult(self._search_hits, message.hit))
 
 
