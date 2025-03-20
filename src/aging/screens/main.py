@@ -27,6 +27,7 @@ from textual.widgets import Footer, Header
 # Textual enhanced imports.
 from textual.worker import get_current_worker
 from textual_enhanced.commands import ChangeTheme, Command, Help, Quit
+from textual_enhanced.dialogs import ModalInput
 from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
@@ -44,12 +45,15 @@ from ..commands import (
     CopyEntrySourceToClipboard,
     CopyEntryTextToClipboard,
     Escape,
+    GlobalSearch,
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
     JumpToMenu,
     SaveEntrySource,
     SaveEntryText,
+    SearchEntry,
+    SearchEntryNextFind,
     SearchForGuide,
     SeeAlso,
     ToggleClassicView,
@@ -58,6 +62,8 @@ from ..commands import (
 from ..data import (
     Guide,
     Guides,
+    SearchHit,
+    SearchHits,
     load_configuration,
     load_guides,
     save_guides,
@@ -67,6 +73,7 @@ from ..messages import CopyToClipboard, GuidesUpdated, OpenEntry, OpenGuide
 from ..providers import GuidesCommands, MainCommands
 from ..widgets import EntryViewer, GuideDirectory, GuideMenu
 from .about import About
+from .search import Search
 
 
 ##############################################################################
@@ -127,9 +134,12 @@ class Main(EnhancedScreen[None]):
         CopyEntrySourceToClipboard,
         CopyEntryTextToClipboard,
         Escape,
+        GlobalSearch,
         JumpToMenu,
         ToggleClassicView,
         BrowseForGuide,
+        SearchEntry,
+        SearchEntryNextFind,
         SearchForGuide,
         SaveEntrySource,
         SaveEntryText,
@@ -156,6 +166,9 @@ class Main(EnhancedScreen[None]):
     classic_view: var[bool] = var(False, init=False)
     """Should the entry viewer use a classic Norton Guide colour scheme?"""
 
+    _needle: var[str | None] = var(None)
+    """The text of any current entry search."""
+
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
 
@@ -164,6 +177,10 @@ class Main(EnhancedScreen[None]):
         """
         self._arguments = arguments
         """The arguments passed on the command line."""
+        self._search_hits = SearchHits()
+        """Keeps track of the last search hits."""
+        self._last_search_hit_visited: SearchHit | None = None
+        """The last search hit that was visited."""
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -340,6 +357,8 @@ class Main(EnhancedScreen[None]):
             return bool(self.guides)
         if action == AboutTheGuide.action_name():
             return bool(self.guide) or None
+        if action == GlobalSearch.action_name():
+            return bool(self.guides)
         if action in (
             command.action_name()
             for command in (
@@ -347,6 +366,8 @@ class Main(EnhancedScreen[None]):
                 CopyEntrySourceToClipboard,
                 SaveEntryText,
                 SaveEntrySource,
+                SearchEntry,
+                SearchEntryNextFind,
             )
         ):
             return self.entry is not None
@@ -397,17 +418,17 @@ class Main(EnhancedScreen[None]):
         if self.guide is not None:
             self.guide.close()
 
-        # If we're being asked to jump to a specific entry, to start with,
-        # make sure we're there...
-        if message.initial_offset is not None:
-            new_guide.goto(message.initial_offset)
-
         # Looks good.
         self.guide = new_guide
 
         # Having opening the guide, the user probably wants to be in the
         # menu.
         self.query_one(GuideMenu).focus()
+
+        # If we're being asked to jump to a specific entry, to start with,
+        # make sure we're there...
+        if message.initial_offset is not None:
+            self.post_message(OpenEntry(message.initial_offset, message.initial_line))
 
     @on(OpenEntry)
     def _open_entry(self, message: OpenEntry) -> None:
@@ -619,6 +640,55 @@ class Main(EnhancedScreen[None]):
     def action_search_for_guide_command(self) -> None:
         """Search the directory for a guide and view it."""
         self.show_palette(GuidesCommands)
+
+    @on(SearchEntry)
+    @work
+    async def action_search_entry_command(self) -> None:
+        """Search the current entry for some text."""
+        if self.entry is None:
+            return
+        if not (
+            needle := await self.app.push_screen_wait(
+                ModalInput("Search entry...", self._needle or "")
+            )
+        ):
+            return
+        if self._needle and self._needle.casefold() == needle.casefold():
+            self.query_one(EntryViewer).search_next()
+        else:
+            self._needle = needle
+            self.query_one(EntryViewer).start_search(self._needle)
+
+    @on(SearchEntryNextFind)
+    def action_search_entry_next_find_command(self) -> None:
+        """Continue any existing entry search."""
+        if self.entry is None:
+            return
+        if self._needle is None:
+            self.post_message(SearchEntry())
+            return
+        self.query_one(EntryViewer).search_next()
+
+    @on(GlobalSearch)
+    @work
+    async def action_global_search_command(self) -> None:
+        """Perform a global search."""
+        result = await self.app.push_screen_wait(
+            Search(
+                self.guides,
+                self.guide,
+                self._search_hits,
+                self._last_search_hit_visited,
+            )
+        )
+        self._search_hits = result.hits
+        self._last_search_hit_visited = result.goto
+        if result.goto is not None:
+            self.post_message(
+                OpenGuide(
+                    result.goto.guide, result.goto.entry_offset, result.goto.entry_line
+                )
+            )
 
 
 ### main.py ends here

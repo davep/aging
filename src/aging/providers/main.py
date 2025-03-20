@@ -20,12 +20,15 @@ from ..commands import (
     CopyEntrySourceToClipboard,
     CopyEntryTextToClipboard,
     Escape,
+    GlobalSearch,
     GoToNextEntry,
     GoToParent,
     GoToPreviousEntry,
     JumpToMenu,
     SaveEntrySource,
     SaveEntryText,
+    SearchEntry,
+    SearchEntryNextFind,
     SearchForGuide,
     SeeAlso,
     ToggleClassicView,
@@ -51,6 +54,7 @@ class MainCommands(CommandsProvider):
         yield from self.maybe(CopyEntryTextToClipboard)
         yield from self.maybe(CopyEntrySourceToClipboard)
         yield Escape()
+        yield from self.maybe(GlobalSearch)
         yield from self.maybe(GoToNextEntry)
         yield from self.maybe(GoToParent)
         yield from self.maybe(GoToPreviousEntry)
@@ -59,8 +63,10 @@ class MainCommands(CommandsProvider):
         yield Quit()
         yield from self.maybe(SaveEntrySource)
         yield from self.maybe(SaveEntryText)
-        yield from self.maybe(SeeAlso)
+        yield from self.maybe(SearchEntry)
+        yield from self.maybe(SearchEntryNextFind)
         yield from self.maybe(SearchForGuide)
+        yield from self.maybe(SeeAlso)
         yield ToggleClassicView()
         yield ToggleGuides()
 

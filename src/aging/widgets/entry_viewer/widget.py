@@ -73,6 +73,18 @@ class EntryViewer(VerticalGroup):
         """
         self.query_one(EntryContent).goto_line(line)
 
+    def start_search(self, needle: str) -> None:
+        """Start a fresh search of the current entry.
+
+        Args:
+            needle: The text to search for.
+        """
+        self.query_one(EntryContent).start_search(needle)
+
+    def search_next(self) -> None:
+        """Continue an existing search."""
+        self.query_one(EntryContent).search_next()
+
     def see_also(self) -> None:
         """Place focus in the see-also area of the widget."""
         self.query_one(SeeAlsos).focus()

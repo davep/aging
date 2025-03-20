@@ -93,4 +93,25 @@ class BrowseForGuide(Command):
     BINDING_KEY = "o"
 
 
+##############################################################################
+class SearchEntry(Command):
+    """Search for text within an entry"""
+
+    BINDING_KEY = "/"
+
+
+##############################################################################
+class SearchEntryNextFind(Command):
+    """Move to the next hit in an entry search"""
+
+    BINDING_KEY = "n"
+
+
+##############################################################################
+class GlobalSearch(Command):
+    """Search for text in this or other guides"""
+
+    BINDING_KEY = "ctrl+slash"
+
+
 ### main.py ends here
