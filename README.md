@@ -57,6 +57,9 @@ Commands can also be discovered via the command palette
 - Manage a directory of all of your Norton Guide files.
 - Read Norton Guide files (obviously!).
 - Clipboard support (copy text or copy source).
+- Search the current entry.
+- Search all entries in the current guide.
+- Search all entries in all guides in the guide directory.
 - A command palette to make it easy to discover commands and their keys.
 - A rich help screen to make it easy to discover commands and their keys.
 - [More as time goes on](https://github.com/davep/aging/issues?q=is%3Aissue+is%3Aopen+label%3ATODO).
