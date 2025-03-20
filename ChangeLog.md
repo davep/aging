@@ -5,6 +5,12 @@
 **Released: WiP**
 
 - Added the ability to search for text within the current entry.
+  (#18[](https://github.com/davep/aging/pull/18))
+- Added the ability to search for text within all entries of the current
+  guide. (#18[](https://github.com/davep/aging/pull/18))
+- Added the ability to search for text within all entries of all guides
+  added to the guide directory.
+  (#18[](https://github.com/davep/aging/pull/18))
 
 ## v0.2.0
 
