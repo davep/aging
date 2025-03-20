@@ -110,7 +110,7 @@ class About(ModalScreen[None]):
             yield Title("File:")
             yield Data(str(self._guide.path))
             yield Title("Size:")
-            yield Data(naturalsize(self._guide.path.stat().st_size))
+            yield Data(naturalsize(self._guide.file_size))
             yield Title("Created:")
             yield Data(
                 f"{datetime.fromtimestamp(int(self._guide.path.stat().st_ctime))}"
