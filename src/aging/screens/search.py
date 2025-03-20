@@ -197,8 +197,16 @@ class Search(ModalScreen[SearchResult]):
             background: $panel;
             border: solid $border;
 
+            &> Label {
+                height: 1;
+                padding: 0 1;
+                width: 1fr;
+                text-align: center;
+                text-overflow: ellipsis;
+            }
+
             &> HorizontalGroup {
-                Input {
+                &> Input {
                     width: 1fr;
                 }
             }
@@ -208,8 +216,11 @@ class Search(ModalScreen[SearchResult]):
             margin: 0 !important;
         }
 
-        ProgressBar Bar {
-            width: 1fr;
+        ProgressBar {
+            padding: 0 1;
+            Bar {
+                width: 1fr;
+            }
         }
 
         .--when-running {
