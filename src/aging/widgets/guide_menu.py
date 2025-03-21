@@ -77,7 +77,7 @@ class GuideMenu(EnhancedOptionList):
             border: none;
         }
 
-        &.--no-guide {
+        &.--no-guide, &.--no-menu {
             display: none;
         }
     }
@@ -124,6 +124,7 @@ class GuideMenu(EnhancedOptionList):
                     )
                     for prompt_id, prompt in enumerate(menu)
                 )
+            self.set_class(not bool(self.option_count), "--no-menu")
             if not self._highlight_menu_for_current_entry():
                 self.highlighted = 0
 

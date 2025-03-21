@@ -288,8 +288,6 @@ class Main(EnhancedScreen[None]):
             self.post_message(
                 OpenGuide(Path(config.current_guide), config.current_entry)
             )
-        if not self.guides_visible:
-            self.set_focus(self.query_one(GuideMenu))
 
     def _new_guides(self, guides: Guides) -> None:
         """Add a list of new guides to the guide directory.
@@ -424,8 +422,9 @@ class Main(EnhancedScreen[None]):
         self.guide = new_guide
 
         # Having opening the guide, the user probably wants to be in the
-        # menu.
-        self.query_one(GuideMenu).focus()
+        # menu, unless there is no menu, then we'll land on the entry
+        # viewer.
+        self.query_one(GuideMenu if self.guide.menu_count else EntryViewer).focus()
 
         # If we're being asked to jump to a specific entry, to start with,
         # make sure we're there...
