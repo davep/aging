@@ -8,7 +8,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
-from ngdb import NGEOF, Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
+from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
