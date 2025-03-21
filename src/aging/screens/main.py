@@ -263,7 +263,7 @@ class Main(EnhancedScreen[None]):
                 except NGDBError:
                     self.notify(
                         "There was an error trying to load the first entry; this guide might be corrupted.",
-                        title="Failed to load an entry",
+                        title="Unable to load entry",
                         severity="error",
                     )
         self._refresh_sub_title()
