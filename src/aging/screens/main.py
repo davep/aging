@@ -8,7 +8,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
-from ngdb import NGEOF, Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
+from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
@@ -460,7 +460,10 @@ class Main(EnhancedScreen[None]):
             # If the directory has been made visible it's almost always
             # going to be because the user wants to interact with it; so
             # send focus there.
-            self.set_focus(self.query_one(GuideDirectory))
+            self.query_one(GuideDirectory).focus()
+        # Guides have gone invisible, try and find the next best place to land.
+        elif self.guide is not None:
+            self.query_one(GuideMenu if self.guide.menu_count else EntryViewer).focus()
 
     @on(ChangeGuidesSide)
     def action_change_guides_side_command(self) -> None:
@@ -588,7 +591,7 @@ class Main(EnhancedScreen[None]):
             if self.guides_visible:
                 # Escape in the menu, but the guides are visible, means
                 # bounce out to the guides.
-                self.set_focus(self.query_one(GuideDirectory))
+                self.query_one(GuideDirectory).focus()
             else:
                 # The guides aren't visible, so escape in the menu is leave
                 # the app.
@@ -606,7 +609,7 @@ class Main(EnhancedScreen[None]):
                 # There's an entry without a parent, which implies it's the
                 # top-level, so we bounce out the menu because the user
                 # likely wants to navigate to another menu option.
-                self.set_focus(self.query_one(GuideMenu))
+                self.query_one(GuideMenu).focus()
 
     @on(SeeAlso)
     def action_see_also_command(self) -> None:
