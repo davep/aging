@@ -13,6 +13,7 @@
   ([#18](https://github.com/davep/aging/pull/18))
 - Improved handling of corrupted/truncated guides, ensuring the app shows an
   error to the user rather than crashing.
+- Fully hide the menu pane if we encounter a guide that has zero menus.
 
 ## v0.2.0
 
