@@ -14,6 +14,7 @@
 - Improved handling of corrupted/truncated guides, ensuring the app shows an
   error to the user rather than crashing.
 - Fully hide the menu pane if we encounter a guide that has zero menus.
+  ([#24](https://github.com/davep/aging/pull/24))
 
 ## v0.2.0
 
