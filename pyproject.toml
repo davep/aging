@@ -87,3 +87,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/aging"]
+
+[tool.pyright]
+venvPath="."
+venv=".venv"
+exclude=[".venv"]
