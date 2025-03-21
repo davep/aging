@@ -11,6 +11,8 @@
 - Added the ability to search for text within all entries of all guides
   added to the guide directory.
   ([#18](https://github.com/davep/aging/pull/18))
+- Improved handling of corrupted/truncated guides, ensuring the app shows an
+  error to the user rather than crashing.
 
 ## v0.2.0
 

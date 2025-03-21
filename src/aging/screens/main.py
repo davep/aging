@@ -8,7 +8,7 @@ from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
+from ngdb import NGEOF, Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
 # Pyperclip imports.
@@ -260,9 +260,11 @@ class Main(EnhancedScreen[None]):
                 # let's try and go with the first entry.
                 try:
                     self.entry = self.guide.goto_first().load()
-                except NGDBError as error:
+                except NGDBError:
                     self.notify(
-                        str(error), title="Failed to load an entry", severity="error"
+                        "There was an error trying to load the first entry; this guide might be corrupted.",
+                        title="Failed to load an entry",
+                        severity="error",
                     )
         self._refresh_sub_title()
 
@@ -438,7 +440,15 @@ class Main(EnhancedScreen[None]):
             message: The message requesting an entry be opened.
         """
         if self.guide is not None:
-            self.entry = self.guide.goto(message.location).load()
+            try:
+                self.entry = self.guide.goto(message.location).load()
+            except NGDBError:
+                self.notify(
+                    "There was an error trying to load that entry; this guide might be corrupted.",
+                    title="Unable to load entry",
+                    severity="error",
+                )
+                return
             if message.initial_line is not None:
                 self.query_one(EntryViewer).goto_line(message.initial_line)
             self.query_one(EntryViewer).focus()
