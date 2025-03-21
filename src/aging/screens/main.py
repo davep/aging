@@ -460,7 +460,10 @@ class Main(EnhancedScreen[None]):
             # If the directory has been made visible it's almost always
             # going to be because the user wants to interact with it; so
             # send focus there.
-            self.set_focus(self.query_one(GuideDirectory))
+            self.query_one(GuideDirectory).focus()
+        # Guides have gone invisible, try and find the next best place to land.
+        elif self.guide is not None:
+            self.query_one(GuideMenu if self.guide.menu_count else EntryViewer).focus()
 
     @on(ChangeGuidesSide)
     def action_change_guides_side_command(self) -> None:
