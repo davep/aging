@@ -591,7 +591,7 @@ class Main(EnhancedScreen[None]):
             if self.guides_visible:
                 # Escape in the menu, but the guides are visible, means
                 # bounce out to the guides.
-                self.set_focus(self.query_one(GuideDirectory))
+                self.query_one(GuideDirectory).focus()
             else:
                 # The guides aren't visible, so escape in the menu is leave
                 # the app.
@@ -609,7 +609,7 @@ class Main(EnhancedScreen[None]):
                 # There's an entry without a parent, which implies it's the
                 # top-level, so we bounce out the menu because the user
                 # likely wants to navigate to another menu option.
-                self.set_focus(self.query_one(GuideMenu))
+                self.query_one(GuideMenu).focus()
 
     @on(SeeAlso)
     def action_see_also_command(self) -> None:
