@@ -1,5 +1,13 @@
 # Aging ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- When doing a guide-wide search in the global search dialog, only the entry
+  progress is now shown; the guides progress is now only visible when doing
+  an all-guides search.
+
 ## v0.3.0
 
 **Released: 2025-03-22**
