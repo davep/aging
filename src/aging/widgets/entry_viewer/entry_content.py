@@ -364,16 +364,7 @@ class EntryContent(EnhancedOptionList):
             line = self.highlighted + 1
         needle = self._needle.casefold()
         while line < len(self.entry):
-            if (
-                needle
-                in str(
-                    PlainText(
-                        self.entry[line]
-                        if isinstance(self.entry, Long)
-                        else self.entry[line].text
-                    )
-                ).casefold()
-            ):
+            if needle in str(PlainText(self.entry[line])).casefold():
                 self.highlighted = self._last_find = line
                 return
             line += 1

@@ -14,6 +14,10 @@ from textual.reactive import var
 from textual.widgets import Label
 
 ##############################################################################
+# Textual enhanced imports.
+from textual_enhanced.binding import HelpfulBinding
+
+##############################################################################
 # Typing extension imports.
 from typing_extensions import Self
 
@@ -43,7 +47,9 @@ class SeeAlsoOption(Label, can_focus=True):
     }
     """
 
-    BINDINGS = [("enter, space", "jump")]
+    BINDINGS = [
+        HelpfulBinding("enter, space", "jump", tooltip="Jump to the see-also entry")
+    ]
 
     HELP = """
     ## See also option
@@ -86,7 +92,14 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
     }
     """
 
-    BINDINGS = [("up, left", "previous"), ("down, right", "next")]
+    BINDINGS = [
+        HelpfulBinding(
+            "left, up", "previous", tooltip="Navigate to the previous see-also item"
+        ),
+        HelpfulBinding(
+            "right, down", "next", tooltip="Navigate to the next see-also item"
+        ),
+    ]
 
     HELP = """
     ## See also items
