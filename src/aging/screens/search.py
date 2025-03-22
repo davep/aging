@@ -236,6 +236,9 @@ class Search(ModalScreen[SearchResult]):
             .--when-stopped {
                 display: none;
             }
+            &.--running-locally .--global-only {
+                display: none;
+            }
         }
     }
     """
@@ -292,8 +295,12 @@ class Search(ModalScreen[SearchResult]):
                 yield Counter(id="lines")
                 yield Counter(id="hits")
             yield Rule(classes="--when-running")
-            yield Label(id="current_guide", classes="--when-running", markup=False)
-            yield ProgressBar(id="guides_progress", classes="--when-running")
+            yield Label(
+                id="current_guide", classes="--when-running --global-only", markup=False
+            )
+            yield ProgressBar(
+                id="guides_progress", classes="--when-running --global-only"
+            )
             yield Label(id="current_entry", classes="--when-running", markup=False)
             yield ProgressBar(id="guide_progress", classes="--when-running")
             yield Rule()
@@ -579,6 +586,7 @@ class Search(ModalScreen[SearchResult]):
             guides = [Guide(self._guide.title, self._guide.path)]
         self._search_hits = []
         self.query_one(SearchResults).clear_results()
+        self.set_class(len(guides) == 1, "--running-locally")
         self._search(
             guides,
             search_text,
