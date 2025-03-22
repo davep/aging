@@ -83,6 +83,12 @@ class GuideMenu(EnhancedOptionList):
     }
     """
 
+    HELP = """
+    ## Guide menu panel
+
+    This panel contains the guide's menu options.
+    """
+
     guide: var[NortonGuide | None] = var(None)
     """The guide whose menu we're showing."""
 
