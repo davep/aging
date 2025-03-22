@@ -584,7 +584,7 @@ class Main(EnhancedScreen[None]):
         """Handle the user bouncing on the escape key."""
         if self.focused is None:
             return
-        if self.focused == self.query_one(GuideDirectory):
+        if self.guide is None or self.focused == self.query_one(GuideDirectory):
             # Escape in directory is always quit the app.
             self.app.exit()
         elif self.focused == self.query_one(GuideMenu):
@@ -601,15 +601,24 @@ class Main(EnhancedScreen[None]):
             # up to the main content.
             self.query_one(EntryViewer).focus()
         elif self.entry is not None:
+            # Looks like we're inside the entry viewer, there's a few ways
+            # this can go...
             if self.entry.parent:
                 # There's an entry and a parent, so that means back up to
                 # the parent.
                 self.post_message(GoToParent())
-            else:
-                # There's an entry without a parent, which implies it's the
-                # top-level, so we bounce out the menu because the user
-                # likely wants to navigate to another menu option.
+            elif self.guide.menu_count:
+                # The entry has no parent, and we do have menus, so let's
+                # head back to the menus.
                 self.query_one(GuideMenu).focus()
+            elif self.guides_visible:
+                # There are no menus, but the guide directory is visible,
+                # let's head there.
+                self.query_one(GuideDirectory).focus()
+            else:
+                # No parent, no menus, no guides directory. Nowhere else to
+                # go.
+                self.app.exit()
 
     @on(SeeAlso)
     def action_see_also_command(self) -> None:
