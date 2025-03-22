@@ -1,8 +1,8 @@
 # Aging ChangeLog
 
-## Unreleased
+## v0.3.0
 
-**Released: WiP**
+**Released: 2025-03-22**
 
 - Added the ability to search for text within the current entry.
   ([#18](https://github.com/davep/aging/pull/18))
