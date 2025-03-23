@@ -54,9 +54,7 @@ class SeeAlsoOption(Label, can_focus=True):
     HELP = """
     ## See also option
 
-    This is a related entry to the entry you are currently viewing. Either
-    press <kbd>Enter</kbd> or click on the option with the mouse to jump to
-    it.
+    This is a guide entry that is related to the entry you are currently viewing.
     """
 
     def __init__(self, see_also: Link) -> None:
@@ -104,8 +102,8 @@ class SeeAlsos(HorizontalScroll, can_focus=False):
     HELP = """
     ## See also items
 
-    This is the collection of related entries for the currently-selected
-    Norton Guide entry.
+    These are all the guide entries that are related to the entry you are
+    currently viewing.
     """
 
     entry: var[Short | Long | None] = var(None)
