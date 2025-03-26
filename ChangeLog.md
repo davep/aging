@@ -1,4 +1,4 @@
-# Aging ChangeLog
+# AgiNG ChangeLog
 
 ## Unreleased
 
@@ -6,7 +6,7 @@
 
 - When doing a guide-wide search in the global search dialog, only the entry
   progress is now shown; the guides progress is now only visible when doing
-  an all-guides search.
+  an all-guides search. ([#33](https://github.com/davep/aging/pull/33))
 
 ## v0.3.0
 
