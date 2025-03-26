@@ -1,8 +1,8 @@
 # AgiNG ChangeLog
 
-## Unreleased
+## v0.4.0
 
-**Released: WiP**
+**Released: 2025-03-26**
 
 - When doing a guide-wide search in the global search dialog, only the entry
   progress is now shown; the guides progress is now only visible when doing
