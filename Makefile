@@ -6,6 +6,7 @@ python := $(run) python
 lint   := rye lint -- --select I
 fmt    := rye fmt
 mypy   := $(run) mypy
+spell  := $(run) codespell
 
 ##############################################################################
 # Local "interactive testing" of the code.
@@ -58,8 +59,12 @@ typecheck:			# Perform static type checks with mypy
 stricttypecheck:	        # Perform a strict static type checks with mypy
 	$(mypy) --scripts-are-modules --strict $(src)
 
+.PHONY: spellcheck
+spellcheck:			# Spell check the code
+	$(spell) *.md $(src) $(docs) $(tests)
+
 .PHONY: checkall
-checkall: codestyle lint stricttypecheck # Check all the things
+checkall: spellcheck codestyle lint stricttypecheck # Check all the things
 
 ##############################################################################
 # Package/publish.
