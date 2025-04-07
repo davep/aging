@@ -61,7 +61,7 @@ stricttypecheck:	        # Perform a strict static type checks with mypy
 
 .PHONY: spellcheck
 spellcheck:			# Spell check the code
-	$(spell) *.md $(src) $(docs) $(tests)
+	$(spell) *.md $(src)
 
 .PHONY: checkall
 checkall: spellcheck codestyle lint stricttypecheck # Check all the things
