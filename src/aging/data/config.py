@@ -3,7 +3,7 @@
 ##############################################################################
 # Python imports.
 from contextlib import contextmanager
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from json import dumps, loads
 from pathlib import Path
@@ -51,6 +51,9 @@ class Configuration:
 
     global_search_ignore_case: bool = True
     """The last state of the ignore case setting."""
+
+    bindings: dict[str, str] = field(default_factory=dict)
+    """Command keyboard binding overrides."""
 
 
 ##############################################################################
