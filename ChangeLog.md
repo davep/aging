@@ -1,5 +1,13 @@
 # AgiNG ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added the ability to configure the keyboard bindings for the system
+  commands.
+- Added `--bindings` as a command line switch.
+
 ## v0.4.0
 
 **Released: 2025-03-26**
