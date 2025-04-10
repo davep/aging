@@ -6,7 +6,7 @@ authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
 dependencies = [
-    "textual>=2.1.2",
+    "textual>=3.0.1",
     "textual-enhanced>=0.8.1",
     "ngdb>=0.11.0",
     "typing-extensions>=4.12.2",
