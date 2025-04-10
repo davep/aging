@@ -10,7 +10,7 @@
 #   universal: false
 
 -e file:.
-humanize==4.12.1
+humanize==4.12.2
     # via aging
 linkify-it-py==2.0.3
     # via markdown-it-py
@@ -22,7 +22,7 @@ mdit-py-plugins==0.4.2
     # via markdown-it-py
 mdurl==0.1.2
     # via markdown-it-py
-ngdb==0.11.0
+ngdb==0.12.0
     # via aging
 platformdirs==4.3.7
     # via textual
@@ -30,17 +30,17 @@ pygments==2.19.1
     # via rich
 pyperclip==1.9.0
     # via aging
-rich==13.9.4
+rich==14.0.0
     # via textual
-textual==2.1.2
+textual==3.0.1
     # via aging
     # via textual-enhanced
     # via textual-fspicker
-textual-enhanced==0.8.1
+textual-enhanced==0.11.0
     # via aging
 textual-fspicker==0.4.1
     # via aging
-typing-extensions==4.12.2
+typing-extensions==4.13.1
     # via aging
     # via ngdb
     # via textual
