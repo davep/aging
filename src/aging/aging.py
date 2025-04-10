@@ -67,6 +67,7 @@ class AgiNG(EnhancedApp[None]):
                 self.theme = configuration.theme
             except InvalidThemeError:
                 pass
+        self.update_keymap(configuration.bindings)
 
     def watch_theme(self) -> None:
         """Save the application's theme when it's changed."""
