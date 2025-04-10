@@ -12,7 +12,7 @@
 -e file:.
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.11.14
+aiohttp==3.11.16
     # via aiohttp-jinja2
     # via textual-dev
     # via textual-serve
@@ -34,7 +34,7 @@ filelock==3.18.0
 frozenlist==1.5.0
     # via aiohttp
     # via aiosignal
-humanize==4.12.1
+humanize==4.12.2
     # via aging
 identify==2.6.9
     # via pre-commit
@@ -57,13 +57,13 @@ mdurl==0.1.2
     # via markdown-it-py
 msgpack==1.1.0
     # via textual-dev
-multidict==6.2.0
+multidict==6.4.2
     # via aiohttp
     # via yarl
 mypy==1.15.0
 mypy-extensions==1.0.0
     # via mypy
-ngdb==0.11.0
+ngdb==0.12.0
     # via aging
 nodeenv==1.9.1
     # via pre-commit
@@ -71,7 +71,7 @@ platformdirs==4.3.7
     # via textual
     # via virtualenv
 pre-commit==4.2.0
-propcache==0.3.0
+propcache==0.3.1
     # via aiohttp
     # via yarl
 pygments==2.19.1
@@ -80,23 +80,23 @@ pyperclip==1.9.0
     # via aging
 pyyaml==6.0.2
     # via pre-commit
-rich==13.9.4
+rich==14.0.0
     # via textual
     # via textual-serve
-textual==2.1.2
+textual==3.0.1
     # via aging
     # via textual-dev
     # via textual-enhanced
     # via textual-fspicker
     # via textual-serve
 textual-dev==1.7.0
-textual-enhanced==0.8.1
+textual-enhanced==0.11.0
     # via aging
 textual-fspicker==0.4.1
     # via aging
 textual-serve==1.1.1
     # via textual-dev
-typing-extensions==4.12.2
+typing-extensions==4.13.1
     # via aging
     # via mypy
     # via ngdb
@@ -104,9 +104,9 @@ typing-extensions==4.12.2
     # via textual-dev
 uc-micro-py==1.0.3
     # via linkify-it-py
-virtualenv==20.29.3
+virtualenv==20.30.0
     # via pre-commit
 xdg-base-dirs==6.0.2
     # via aging
-yarl==1.18.3
+yarl==1.19.0
     # via aiohttp
