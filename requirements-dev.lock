@@ -57,7 +57,7 @@ mdurl==0.1.2
     # via markdown-it-py
 msgpack==1.1.0
     # via textual-dev
-multidict==6.4.2
+multidict==6.4.3
     # via aiohttp
     # via yarl
 mypy==1.15.0
@@ -83,7 +83,7 @@ pyyaml==6.0.2
 rich==14.0.0
     # via textual
     # via textual-serve
-textual==3.0.1
+textual==3.1.0
     # via aging
     # via textual-dev
     # via textual-enhanced
@@ -96,7 +96,7 @@ textual-fspicker==0.4.1
     # via aging
 textual-serve==1.1.1
     # via textual-dev
-typing-extensions==4.13.1
+typing-extensions==4.13.2
     # via aging
     # via mypy
     # via ngdb
