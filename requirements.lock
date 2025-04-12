@@ -32,7 +32,7 @@ pyperclip==1.9.0
     # via aging
 rich==14.0.0
     # via textual
-textual==3.0.1
+textual==3.1.0
     # via aging
     # via textual-enhanced
     # via textual-fspicker
@@ -40,7 +40,7 @@ textual-enhanced==0.11.0
     # via aging
 textual-fspicker==0.4.1
     # via aging
-typing-extensions==4.13.1
+typing-extensions==4.13.2
     # via aging
     # via ngdb
     # via textual

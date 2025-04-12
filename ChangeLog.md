@@ -8,6 +8,8 @@
   commands. ([#40](https://github.com/davep/aging/pull/40))
 - Added `--bindings` as a command line switch.
   ([#40](https://github.com/davep/aging/pull/40))
+- Added a workaround for
+  [textual#5742](https://github.com/Textualize/textual/issues/5742)
 
 ## v0.4.0
 
