@@ -22,10 +22,10 @@ from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
 from textual.reactive import var
 from textual.widgets import Footer, Header
+from textual.worker import get_current_worker
 
 ##############################################################################
 # Textual enhanced imports.
-from textual.worker import get_current_worker
 from textual_enhanced.commands import ChangeTheme, Command, Help, Quit
 from textual_enhanced.dialogs import ModalInput
 from textual_enhanced.screen import EnhancedScreen
