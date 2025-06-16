@@ -1,8 +1,8 @@
 # AgiNG ChangeLog
 
-## Unreleased
+## v1.0.0
 
-**Released: WiP**
+**Released: 2025-06-16**
 
 - Added the ability to configure the keyboard bindings for the system
   commands. ([#40](https://github.com/davep/aging/pull/40))
