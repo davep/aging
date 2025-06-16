@@ -26,7 +26,7 @@ from .screens import Main
 class AgiNG(EnhancedApp[None]):
     """The main application class."""
 
-    HELP_TITLE = f"AgiNG {__version__}"
+    HELP_TITLE = f"AgiNG v{__version__}"
     HELP_ABOUT = """
     `AgiNG` is a terminal-based Norton Guide reader; it was created
     by and is maintained by [Dave Pearson](https://www.davep.org/); it is
