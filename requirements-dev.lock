@@ -12,7 +12,7 @@
 -e file:.
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.11.16
+aiohttp==3.12.13
     # via aiohttp-jinja2
     # via textual-dev
     # via textual-serve
@@ -24,19 +24,19 @@ attrs==25.3.0
     # via aiohttp
 cfgv==3.4.0
     # via pre-commit
-click==8.1.8
+click==8.2.1
     # via textual-dev
 codespell==2.4.1
 distlib==0.3.9
     # via virtualenv
 filelock==3.18.0
     # via virtualenv
-frozenlist==1.5.0
+frozenlist==1.7.0
     # via aiohttp
     # via aiosignal
-humanize==4.12.2
+humanize==4.12.3
     # via aging
-identify==2.6.9
+identify==2.6.12
     # via pre-commit
 idna==3.10
     # via yarl
@@ -55,23 +55,25 @@ mdit-py-plugins==0.4.2
     # via markdown-it-py
 mdurl==0.1.2
     # via markdown-it-py
-msgpack==1.1.0
+msgpack==1.1.1
     # via textual-dev
-multidict==6.4.3
+multidict==6.4.4
     # via aiohttp
     # via yarl
-mypy==1.15.0
-mypy-extensions==1.0.0
+mypy==1.16.0
+mypy-extensions==1.1.0
     # via mypy
 ngdb==0.12.0
     # via aging
 nodeenv==1.9.1
     # via pre-commit
-platformdirs==4.3.7
+pathspec==0.12.1
+    # via mypy
+platformdirs==4.3.8
     # via textual
     # via virtualenv
 pre-commit==4.2.0
-propcache==0.3.1
+propcache==0.3.2
     # via aiohttp
     # via yarl
 pygments==2.19.1
@@ -83,20 +85,20 @@ pyyaml==6.0.2
 rich==14.0.0
     # via textual
     # via textual-serve
-textual==3.1.0
+textual==3.4.0
     # via aging
     # via textual-dev
     # via textual-enhanced
     # via textual-fspicker
     # via textual-serve
 textual-dev==1.7.0
-textual-enhanced==0.11.0
+textual-enhanced==0.13.0
     # via aging
 textual-fspicker==0.4.1
     # via aging
-textual-serve==1.1.1
+textual-serve==1.1.2
     # via textual-dev
-typing-extensions==4.13.2
+typing-extensions==4.14.0
     # via aging
     # via mypy
     # via ngdb
@@ -104,9 +106,9 @@ typing-extensions==4.13.2
     # via textual-dev
 uc-micro-py==1.0.3
     # via linkify-it-py
-virtualenv==20.30.0
+virtualenv==20.31.2
     # via pre-commit
 xdg-base-dirs==6.0.2
     # via aging
-yarl==1.19.0
+yarl==1.20.1
     # via aiohttp
