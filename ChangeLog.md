@@ -1,5 +1,11 @@
 # AgiNG ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added `--theme` as a command line switch.
+
 ## v1.0.0
 
 **Released: 2025-06-16**

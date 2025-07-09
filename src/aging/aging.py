@@ -64,7 +64,7 @@ class AgiNG(EnhancedApp[None]):
         configuration = load_configuration()
         if configuration.theme is not None:
             try:
-                self.theme = configuration.theme
+                self.theme = arguments.theme or configuration.theme
             except InvalidThemeError:
                 pass
         try:
