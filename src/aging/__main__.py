@@ -53,7 +53,7 @@ def get_args() -> Namespace:
         action="store_true",
     )
 
-    # An option guide to open.
+    # An optional guide to open.
     parser.add_argument(
         "guide",
         nargs="?",
