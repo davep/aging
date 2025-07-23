@@ -53,7 +53,14 @@ def get_args() -> Namespace:
         action="store_true",
     )
 
-    # An option guide to open.
+    # Add --theme
+    parser.add_argument(
+        "-t",
+        "--theme",
+        help="Set the theme for the application (set to ? to list available themes)",
+    )
+
+    # An optional guide to open.
     parser.add_argument(
         "guide",
         nargs="?",
@@ -85,12 +92,22 @@ def show_bindable_commands() -> None:
 
 
 ##############################################################################
+def show_themes() -> None:
+    """Show the available themes."""
+    for theme in sorted(AgiNG(Namespace(theme=None)).available_themes):
+        if theme != "textual-ansi":
+            print(theme)
+
+
+##############################################################################
 def main() -> None:
     """Main entry function."""
     if (args := get_args()).license:
         print(cleandoc(AgiNG.HELP_LICENSE))
     elif args.bindings:
         show_bindable_commands()
+    elif args.theme == "?":
+        show_themes()
     else:
         AgiNG(args).run()
 
