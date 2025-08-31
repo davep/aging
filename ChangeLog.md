@@ -8,6 +8,7 @@
 - Migrated from `rye` to `uv` for development management.
   ([#47](https://github.com/davep/aging/pull/47))
 - Added Python 3.14 as a tested/supported Python version.
+  ([#48](https://github.com/davep/aging/pull/48))
 
 ## v1.0.0
 
