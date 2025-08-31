@@ -7,6 +7,7 @@
 - Added `--theme` as a command line switch.
 - Migrated from `rye` to `uv` for development management.
   ([#47](https://github.com/davep/aging/pull/47))
+- Added Python 3.14 as a tested/supported Python version.
 
 ## v1.0.0
 
