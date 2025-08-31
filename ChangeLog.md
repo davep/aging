@@ -5,6 +5,8 @@
 **Released: WiP**
 
 - Added `--theme` as a command line switch.
+- Migrated from `rye` to `uv` for development management.
+  ([#47](https://github.com/davep/aging/pull/47))
 
 ## v1.0.0
 
