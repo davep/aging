@@ -9,6 +9,8 @@
   ([#47](https://github.com/davep/aging/pull/47))
 - Added Python 3.14 as a tested/supported Python version.
   ([#48](https://github.com/davep/aging/pull/48))
+- Fixed a visual glitch with the "bounce bar" when an entry was wrapping its
+  content.
 
 ## v1.0.0
 

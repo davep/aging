@@ -309,7 +309,11 @@ class EntryContent(EnhancedOptionList):
         text, no overriding colours.
         """
         strip = super().render_line(y)
-        if self.scroll_offset.y + y == self.highlighted:
+        try:
+            option_index, _ = self._lines[self.scroll_offset.y + y]
+        except IndexError:
+            return strip
+        if option_index == self.highlighted:
             if highlight := self.get_visual_style("option-list--option-highlighted"):
                 highlight_style = highlight.rich_style
                 # Despite its name, Style.without_color removes more than
