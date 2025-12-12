@@ -1,5 +1,12 @@
 # AgiNG ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Fixed a cosmetic glitch in the menus of some guides with non-ASCII
+  characters in the prompts.
+
 ## v1.1.0
 
 **Released: 2025-01-02**
