@@ -9,7 +9,7 @@
 
 ## v1.1.0
 
-**Released: 2025-01-02**
+**Released: 2025-12-02**
 
 - Added `--theme` as a command line switch.
 - Migrated from `rye` to `uv` for development management.
