@@ -2,7 +2,7 @@
 
 ##############################################################################
 # NGDB imports.
-from ngdb import Entry, Link, Menu, NortonGuide
+from ngdb import Entry, Link, Menu, NortonGuide, make_dos_like
 
 ##############################################################################
 # Textual imports.
@@ -32,7 +32,7 @@ class TopLevelMenu(Option):
         """
         self._menu = menu
         """The menu we're displaying."""
-        super().__init__(f"[bold]{menu.title}[/]", id=str(menu_id))
+        super().__init__(f"[bold]{make_dos_like(menu.title)}[/]", id=str(menu_id))
 
     @property
     def first_child_id(self) -> str:
@@ -54,7 +54,9 @@ class MenuPrompt(Option):
         """
         self._menu_prompt = menu_prompt
         """The prompt that this object is displaying."""
-        super().__init__(f"  {menu_prompt.text}", id=f"{menu_id}-{prompt_id}")
+        super().__init__(
+            f"  {make_dos_like(menu_prompt.text)}", id=f"{menu_id}-{prompt_id}"
+        )
 
     @property
     def offset(self) -> int:
