@@ -1,15 +1,15 @@
 # AgiNG ChangeLog
 
-## Unreleased
+## v1.1.1
 
-**Released: WiP**
+**Released: 2025-12-12**
 
 - Fixed a cosmetic glitch in the menus of some guides with non-ASCII
-  characters in the prompts.
+  characters in the prompts. ([#52](https://github.com/davep/aging/pull/52))
 
 ## v1.1.0
 
-**Released: 2025-01-02**
+**Released: 2025-12-02**
 
 - Added `--theme` as a command line switch.
 - Migrated from `rye` to `uv` for development management.
