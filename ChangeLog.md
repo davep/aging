@@ -1,8 +1,8 @@
 # AgiNG ChangeLog
 
-## Unreleased
+## v1.2.0
 
-**Released: WiP**
+**Released: 202-12-16**
 
 - Added the ability to copy the credits of a guide from the About dialog.
   ([#55](https://github.com/davep/aging/pull/55))
