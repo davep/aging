@@ -4,7 +4,7 @@
 
 **Released: WiP**
 
-- Added the ability to copy the credits of a guide from the About dalog.
+- Added the ability to copy the credits of a guide from the About dialog.
 
 ## v1.1.1
 
