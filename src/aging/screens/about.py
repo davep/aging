@@ -24,6 +24,10 @@ from textual.widgets import Button, Label
 # Textual enhanced imports.
 from textual_enhanced.tools import add_key
 
+##############################################################################
+# Local imports.
+from ..messages.clipboard import CopyToClipboard
+
 
 ##############################################################################
 class Title(Label):
@@ -62,6 +66,10 @@ class About(ModalScreen[None]):
             border-top: solid $border;
             width: 100%;
             height: auto;
+
+            #copy {
+                margin-left: 1;
+            }
         }
 
         Title, {
@@ -81,7 +89,7 @@ class About(ModalScreen[None]):
     }
     """
 
-    BINDINGS = [("escape", "dismiss(None)")]
+    BINDINGS = [("c", "copy_credits"), ("escape", "dismiss(None)")]
 
     def __init__(self, guide: NortonGuide) -> None:
         """Initialise the object.
@@ -93,17 +101,17 @@ class About(ModalScreen[None]):
         """The guide we're viewing."""
         super().__init__()
 
+    @property
+    def _credits(self) -> str:
+        """The credits of the guide as a single string."""
+        return "\n".join(make_dos_like(line) for line in self._guide.credits)
+
     def compose(self) -> ComposeResult:
         """Compose the content of the screen."""
         with Vertical() as dialog:
             dialog.border_title = f"About {self._guide.path.name}"
-            if any(line.strip() for line in self._guide.credits):
-                yield (
-                    data := Data(
-                        "\n".join(make_dos_like(line) for line in self._guide.credits),
-                        id="credits",
-                    )
-                )
+            if has_credits := any(line.strip() for line in self._guide.credits):
+                yield (data := Data(self._credits, id="credits"))
                 data.border_title = "Credits"
             yield Title("Made With:")
             yield Data(self._guide.made_with)
@@ -116,12 +124,20 @@ class About(ModalScreen[None]):
                 f"{datetime.fromtimestamp(int(self._guide.path.stat().st_ctime))}"
             )
             with Horizontal(id="buttons"):
-                yield Button(add_key("Close", "Esc", self))
+                yield Button(add_key("Close", "Esc", self), id="close")
+                if has_credits:
+                    yield Button(add_key("Copy Credits", "c", self), id="copy")
 
-    @on(Button.Pressed)
+    @on(Button.Pressed, "#close")
     def _close_about(self) -> None:
         """Close the about dialog."""
         self.dismiss(None)
+
+    @on(Button.Pressed, "#copy")
+    def action_copy_credits(self) -> None:
+        """Copy the credits to the clipboard."""
+        if self.query("#copy"):
+            self.post_message(CopyToClipboard(self._credits, "the guide's credits"))
 
 
 ### about.py ends here

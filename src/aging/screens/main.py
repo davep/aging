@@ -11,11 +11,6 @@ from typing import Iterator
 from ngdb import Long, NGDBError, NortonGuide, PlainText, Short, make_dos_like
 
 ##############################################################################
-# Pyperclip imports.
-from pyperclip import PyperclipException
-from pyperclip import copy as copy_to_clipboard
-
-##############################################################################
 # Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
@@ -469,27 +464,6 @@ class Main(EnhancedScreen[None]):
     def action_change_guides_side_command(self) -> None:
         """Change which side the guides directory is docked to."""
         self.guides_on_right = not self.guides_on_right
-
-    @on(CopyToClipboard)
-    def _copy_text_to_clipbaord(self, message: CopyToClipboard) -> None:
-        """Copy some text into the clipboard.
-
-        Args:
-            message: The message requesting the text be copied.
-        """
-        # First off, use Textual's own copy to clipboard facility. Generally
-        # this will work in most terminals, and if it does it'll likely work
-        # best, getting the text through remote connections to the user's
-        # own environment.
-        self.app.copy_to_clipboard(message.text)
-        # However, as a backup, use pyerclip too. If the above did fail due
-        # to the terminal not supporting the operation, this might.
-        try:
-            copy_to_clipboard(message.text)
-        except PyperclipException:
-            pass
-        # Give the user some feedback.
-        self.notify(f"Copied {message.description or ''}".strip())
 
     @property
     def _entry_text(self) -> str:
