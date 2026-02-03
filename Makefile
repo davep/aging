@@ -6,7 +6,7 @@ build   := uv build
 publish := uv publish --username=__token__ --keyring-provider=subprocess
 python  := $(run) python
 ruff    := $(run) ruff
-lint    := $(ruff) check --select I
+lint    := $(ruff) check
 fmt     := $(ruff) format
 mypy    := $(run) mypy
 spell   := $(run) codespell
