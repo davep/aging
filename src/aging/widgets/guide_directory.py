@@ -12,7 +12,6 @@ from ngdb import NortonGuide
 ##############################################################################
 # Textual imports.
 from textual import on, work
-from textual.binding import Binding
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
 
