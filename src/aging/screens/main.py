@@ -396,7 +396,7 @@ class Main(EnhancedScreen[None]):
         # actually is a guide.
         try:
             new_guide = NortonGuide(message.location)
-        except IOError as error:
+        except OSError as error:
             self.notify(
                 str(error), title=f"Error opening {message.location}", severity="error"
             )

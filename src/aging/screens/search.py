@@ -526,7 +526,7 @@ class Search(ModalScreen[SearchResult]):
                         return
                     self._search_entry(search, entry, worker, needle, ignore_case)
             self.post_message(self.FinishedGuide())
-        except (IOError, NGDBError) as error:
+        except (OSError, NGDBError) as error:
             self.notify(
                 str(error), title=f"Failed to search {guide.location}", severity="error"
             )

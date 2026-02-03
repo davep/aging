@@ -193,7 +193,7 @@ class GuideDirectory(EnhancedOptionList):
         """
         try:
             save_guides(new_guides)
-        except IOError as error:
+        except OSError as error:
             self.notify(str(error), title="Unable to save guides", severity="error")
             return
         self.post_message(GuidesUpdated())
