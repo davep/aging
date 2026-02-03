@@ -1,9 +1,10 @@
 """Provides the search screen."""
 
 ##############################################################################
-# NGDB imports.
+# Python imports.
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator, NamedTuple
+from typing import NamedTuple
 
 ##############################################################################
 # Humanize imports.

@@ -3,8 +3,8 @@
 ##############################################################################
 # Python imports.
 from argparse import Namespace
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 ##############################################################################
 # NGDB imports.
