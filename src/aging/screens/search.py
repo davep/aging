@@ -1,9 +1,10 @@
 """Provides the search screen."""
 
 ##############################################################################
-# NGDB imports.
+# Python imports.
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator, NamedTuple
+from typing import NamedTuple
 
 ##############################################################################
 # Humanize imports.
@@ -525,7 +526,7 @@ class Search(ModalScreen[SearchResult]):
                         return
                     self._search_entry(search, entry, worker, needle, ignore_case)
             self.post_message(self.FinishedGuide())
-        except (IOError, NGDBError) as error:
+        except (OSError, NGDBError) as error:
             self.notify(
                 str(error), title=f"Failed to search {guide.location}", severity="error"
             )
