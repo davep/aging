@@ -1,6 +1,10 @@
 """Provides the widget for viewing a guide entry."""
 
 ##############################################################################
+# Python imports.
+from typing import Self
+
+##############################################################################
 # NGDB imports.
 from ngdb import Long, Short
 
@@ -9,10 +13,6 @@ from ngdb import Long, Short
 from textual.app import ComposeResult
 from textual.containers import VerticalGroup
 from textual.reactive import var
-
-##############################################################################
-# Typing extension imports.
-from typing_extensions import Self
 
 ##############################################################################
 # Local imports.
