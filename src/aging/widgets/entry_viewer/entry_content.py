@@ -3,7 +3,7 @@
 ##############################################################################
 # Python imports.
 from functools import lru_cache
-from typing import Final
+from typing import Final, Self
 
 ##############################################################################
 # NGDB imports.
@@ -25,10 +25,6 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 ##############################################################################
 # Textual enhanced imports.
 from textual_enhanced.widgets import EnhancedOptionList
-
-##############################################################################
-# Typing extension imports.
-from typing_extensions import Self
 
 ##############################################################################
 # Local imports.

@@ -1,6 +1,10 @@
 """Provides a widget for seeing and navigating see-also items."""
 
 ##############################################################################
+# Python imports.
+from typing import Self
+
+##############################################################################
 # NGDB imports.
 from ngdb import Link, Long, Short
 
@@ -16,10 +20,6 @@ from textual.widgets import Label
 ##############################################################################
 # Textual enhanced imports.
 from textual_enhanced.binding import HelpfulBinding
-
-##############################################################################
-# Typing extension imports.
-from typing_extensions import Self
 
 ##############################################################################
 # Local imports.
